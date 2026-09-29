@@ -107,13 +107,13 @@ Welcome to your Hypervelocity Engineering Workshop! We've prepared a seamless en
 
 Once you are ready to dive in, your virtual machine and **Guide** will be right at your fingertips within your web browser.
 
-   ![](./media/guide1-21111.png)
+   ![](./media/labenv.png)
 
 ## Lab Guide Zoom In/Zoom Out
 
 To adjust the zoom level for the environment page, click the **A↕: 100%** icon located next to the timer in the lab environment.
 
-   ![Manage Your Virtual Machine](./media/zoom-2111.png)
+   ![Manage Your Virtual Machine](./media/guidezoomin&out.png)
 
 ## Virtual Machine & Lab Guide
 
@@ -123,19 +123,19 @@ Your virtual machine is your workhorse throughout the workshop. The lab guide is
 
 To get a better understanding of your lab resources and credentials, navigate to the **Environment** tab.
 
-   ![Explore Lab Resources](./media/env-2111.png)
+   ![Explore Lab Resources](./media/exploringenv.png)
 
 ## Utilizing the Split Window Feature
 
 For convenience, you can open the lab guide in a separate window by selecting the **Split Window** button from the top right corner.
 
- ![Use the Split Window Feature](./media/guide2-2111.png)
+ ![Use the Split Window Feature](./media/splitwindow.png)
 
 ## Managing Your Virtual Machine
 
 Feel free to **start, stop, or restart (2)** your virtual machine as needed from the **Resources (1)** tab. Your experience is in your hands!
 
- ![Manage Your Virtual Machine](./media/rag4.png)
+ ![Manage Your Virtual Machine](./media/managingvm.png)
 
 ## Validating Your Lab Tasks
 
@@ -165,11 +165,11 @@ The RPI surfaces in this lab are powered by a large language model. Their output
 
 1. On your virtual machine, locate the **Visual Studio Code** icon on the desktop and double-click to open it.
 
-   ![Launch Visual Studio Code](./media/hve-e0-s1.png)
+   ![Launch Visual Studio Code](./media/vscode.png)
 
 1. When Visual Studio Code opens, you will be prompted to sign in to GitHub to activate Copilot. Click **Sign in** in the notification, or select the **Accounts** icon in the lower left corner and choose **Sign in with GitHub**.
 
-   ![Sign in to GitHub](./media/hve-e0-s2.png)
+   ![Sign in to GitHub](./media/githubsigin.png)
 
 1. A browser window will open. Enter your GitHub credentials:
 
@@ -177,15 +177,15 @@ The RPI surfaces in this lab are powered by a large language model. Their output
 
    - **GitHub Password:** <inject key="GitHubPassword"></inject>
 
-     ![Enter GitHub credentials](./media/hve-e0-s3.png)
+     ![Enter GitHub credentials](./media/login0.png)
 
 1. Complete any multi-factor authentication prompt if one appears, then click **Authorize Visual Studio Code** when asked.
 
-   ![Authorize VS Code](./media/hve-e0-s4.png)
+   ![Authorize VS Code](./media/2fauth.png)
 
 1. Return to Visual Studio Code. Confirm that the **Copilot** icon in the title bar no longer shows a warning badge. This means Copilot is active on your account.
 
-   ![Copilot active](./media/hve-e0-s5.png)
+   ![Copilot active](./media/copiloticon.png)
 
    >**Note:** If Copilot reports that no subscription is available, contact CloudLabs support before continuing. Every exercise in this lab depends on an active Copilot entitlement.
 
