@@ -6,11 +6,11 @@
 
 Your backlog item is to add Azure Blob Storage output to the Contoso ingestion pipeline. An engineer under time pressure would open Copilot Chat and ask it to write a blob writer. That is exactly the failure mode HVE exists to prevent, because the AI does not yet know what `WriterBase` requires, how the existing `LocalFileWriter` handles errors, what the team's conventions document says, or which Azure SDK the project already depends on.
 
-Those are evidence gaps, and RPI treats an evidence gap as the trigger for Research. In this exercise you will run the Research phase. `/rpi-research` will investigate all of that, read-only, and write down what it found, with evidence. No code will be written and no source file will be touched.
+In this exercise you will run the Research phase instead. The Task Researcher agent will investigate all of that and write down what it found, with evidence. No source code will be written.
 
 ## 📖 Overview
 
-In this exercise, you will execute the first phase of the RPI lifecycle. You will invoke `/rpi-research` against a real backlog item, observe it gathering evidence from the codebase and external documentation, and inspect the research artifact it produces. You will then refine the research with a follow-up question and read the recommended approach it settled on.
+In this exercise, you will execute the first phase of the RPI workflow. You will invoke the Task Researcher agent against a real backlog item, observe it gathering evidence from the codebase and external documentation, and inspect the research document it produces. You will then refine the research with a follow-up question and read the recommended approach it settled on.
 
 By the end of this exercise, you will have a research document that the Plan phase can consume, and you will understand why a phase that produces no code is worth twenty minutes of a two-hour delivery.
 
@@ -19,43 +19,51 @@ By the end of this exercise, you will have a research document that the Plan pha
 In this exercise, you will complete the following tasks:
 
 - Task 1: Run the Research phase
-- Task 2: Inspect the research artifact
+- Task 2: Inspect the research document
 - Task 3: Read the evidence and the recommended approach
 - Task 4: Refine the research with a follow-up
 
 ### Task 1: Run the Research Phase
 
-In this task, you will invoke `/rpi-research` for the Azure Blob Storage backlog item.
+In this task, you will invoke the Task Researcher agent using the `/task-research` prompt.
 
 1. Confirm you are working in the **contoso-pipeline** folder in Visual Studio Code.
 
 1. Open **GitHub Copilot Chat** with **Ctrl+Alt+I**.
 
-1. If the chat panel shows any earlier conversation, start a fresh one by clicking the **+** icon at the top of the panel, or by typing **/clear** and pressing **Enter**.
+1. If the chat panel shows any earlier conversation, start a fresh one by clicking the **+** icon at the top of the panel.
 
     ![Start a fresh chat](./media/hve-e2t1s3.png)
 
-    >**Note:** Reset context whenever you switch lifecycle concepts. The dated artifacts in `.copilot-tracking/` carry all the state you need, so nothing is lost.
+    >**Note:** Every RPI phase begins in a clean context. This is not optional.
 
-1. Before you run Research, decide whether it is warranted. Ask yourself whether the evidence you already have covers the requirements, acceptance criteria, dependencies, material risks, and architecture decisions for this task.
-
-    >**Note:** Research runs **only when available evidence is inadequate**. You have a one-line backlog item and nothing that records what `WriterBase` requires, how `LocalFileWriter` fails, or which Azure SDK the project uses. That is an evidence gap, so Research is warranted here. On a task where the evidence was already adequate, RPI would record why Research was satisfied and skip it, or reuse an existing research document.
-
-1. In the chat input box, type the following prompt and press **Enter**:
+1. In the chat input box, type the following prompt and press **Shift+Enter** after each line so it stays a single message, then press **Enter** to send it:
 
     ```
-    /rpi-research Azure Blob Storage integration for the Contoso pipeline writers package
+    /task-research Azure Blob Storage integration for the Contoso pipeline writers package
+
+    Add Azure Blob Storage output to the Contoso pipeline. The pipeline currently writes to local disk through LocalFileWriter in src/pipeline/writers/.
+
+    Research:
+    - How WriterBase and LocalFileWriter work, and what a new writer must implement
+    - The team conventions in docs/conventions.md
+    - Which Azure SDK the project already depends on, and how to upload a blob with it
+    - Authentication options and error handling for failed uploads
+
+    Focus on approaches that match the existing patterns in the codebase. Do not write any code.
     ```
 
-    ![Invoke rpi-research](./media/hve-e2t1s4.png)
+    ![Invoke task-research](./media/hve-e2t1s4.png)
 
-    >**Note:** `/rpi-research` is a **read-only** surface. It can read files and consult external documentation, but it cannot modify source code. The task slug it derives from your prompt names every artifact for this task across the remaining phases.
+    >**Note:** The `/task-research` prompt automatically routes to the **Task Researcher** agent. You do not need to select the agent yourself. This is the Prompt to Agent delegation flow. Confirm that the agent picker at the bottom of the chat input now shows **Task Researcher**.
 
-1. Watch the agent work. You will see it read files from the repository, follow references between them, and consult external documentation. This takes a few minutes.
+1. Watch the agent work. You will see it read files from the repository, follow references between them, and consult external documentation. This can take several minutes.
 
     ![Researcher gathering evidence](./media/hve-e2t1s5.png)
 
-    >**Note:** Notice what it is doing and what it is not doing. It is reading `base.py`, `local_writer.py`, `requirements.txt` and `docs/conventions.md`. It is not creating or editing any file in `src/`. If you see it propose code at this stage, it has drifted from its contract, and you should tell it to continue researching rather than implementing.
+    >**Note:** Notice what it is doing and what it is not doing. It is reading `base.py`, `local_writer.py`, `requirements.txt` and `docs/conventions.md`. It is only writing files under `.copilot-tracking/research/`, and it is not creating or editing any file in `src/`. If you see it propose or write code in `src/`, it has drifted from its role, and you should tell it to continue researching rather than implementing.
+
+1. If the agent asks a clarifying question, answer it briefly and let it continue.
 
 1. Wait until the agent reports that the research document has been written. It will state the file path in its final message.
 
@@ -68,9 +76,9 @@ In this task, you will invoke `/rpi-research` for the Azure Blob Storage backlog
 
    <validation step="00000000-0000-0000-0000-000000000004" />
 
-### Task 2: Inspect the Research Artifact
+### Task 2: Inspect the Research Document
 
-In this task, you will locate and open the research document the agent produced. The artifact, not the chat transcript, is the real output of this phase.
+In this task, you will locate and open the research document the agent produced. The document, not the chat transcript, is the real output of this phase.
 
 1. In the Visual Studio Code Explorer pane, expand the **.copilot-tracking (1)** folder, then **research (2)**, then the folder named with **today's date (3)**.
 
@@ -81,20 +89,20 @@ In this task, you will locate and open the research document the agent produced.
 1. Open the research file. It will be named following the pattern below:
 
     ```
-    .copilot-tracking/research/YYYY-MM-DD/{task_slug}-research.md
+    .copilot-tracking/research/YYYY-MM-DD/<topic>-research.md
     ```
 
     ![Open the research document](./media/hve-e2t2s2.png)
 
-    >**Note:** The exact task slug depends on how the agent interpreted your prompt. It may be `blob-storage`, `azure-blob-storage` or similar, giving `blob-storage-research.md`, `azure-blob-storage-research.md` and so on. Any of these is correct. Note the slug, because you will use it in later exercises.
+    >**Note:** The exact topic name depends on how the agent interpreted your prompt. It may be `blob-storage-research.md`, `azure-blob-storage-research.md` or similar. Any of these is correct. Write down the exact file name, because you will point the Plan phase at it in the next exercise. You may also see a **subagents** folder next to it holding the notes of the helper agents the researcher used. The main document is the one named `...-research.md` directly under the dated folder.
 
 1. Read the document from top to bottom. Confirm it contains the following, and note where each appears:
 
-    - A statement of what was investigated and which evidence gaps prompted the research.
+    - A statement of the task and the **scope and success criteria** of the research.
     - Findings about the **existing writer pattern**, referencing `WriterBase` and `LocalFileWriter` by file and line.
     - Findings about the **team conventions** discovered in `docs/conventions.md`.
     - Findings about the **Azure SDK** approach for blob uploads, with external sources cited.
-    - Any **material risks or open questions** it could not resolve.
+    - **Potential next research**, meaning open questions the agent chose not to chase.
     - A **recommended approach** at the end.
 
     ![Research document contents](./media/hve-e2t2s3.png)
@@ -116,19 +124,19 @@ In this task, you will locate and open the research document the agent produced.
 
 In this task, you will focus on the two properties that make a research document useful downstream.
 
-1. Scroll to the **sources** or **references** section of the research document.
+1. Scroll to the **references** or **sources** parts of the research document.
 
     ![Sources section](./media/hve-e2t3s1.png)
 
-    >**Note:** Every claim should be attributable. Internal claims point at files in this repository. External claims point at documentation URLs. A research document without sources is just a longer guess.
+    >**Note:** Every claim should be attributable. Internal claims point at files and line ranges in this repository. External claims point at documentation URLs. A research document without sources is just a longer guess.
 
-1. Scroll to the **recommended approach** section.
+1. Scroll to the **selected approach** or **recommended approach** section.
 
     ![Recommended approach](./media/hve-e2t3s2.png)
 
-    >**Note:** Research converges on a recommendation rather than handing you a menu. This is deliberate. A plan built from several competing options is not a contract, and the Implement phase would have to make design decisions at execution time, which is exactly what RPI is designed to prevent.
+    >**Note:** The Task Researcher may evaluate several alternatives, but it concludes with **one recommended approach** and the reasons for choosing it. This is deliberate. A plan built from three competing options is not a contract, and the Implement phase would have to make design decisions at execution time, which is exactly what RPI is designed to prevent.
 
-1. Read the recommended approach and check it against what you saw in `base.py` during Exercise 01. Confirm that it proposes extending `WriterBase` rather than inventing a new abstraction.
+1. Read the recommended approach and check it against what you saw in `base.py` during Exercise 01. Confirm that it proposes extending `WriterBase` and implementing `_write`, rather than inventing a new abstraction.
 
     ![Approach aligns with existing pattern](./media/hve-e2t3s3.png)
 
@@ -136,11 +144,11 @@ In this task, you will focus on the two properties that make a research document
 
 ### Task 4: Refine the Research with a Follow-up
 
-In this task, you will deepen one area of the research. Research is iterative, and closing an evidence gap now is far cheaper than discovering it during implementation.
+In this task, you will deepen one area of the research. Research is iterative, and refining it now is far cheaper than discovering a gap during implementation.
 
 1. Return to **GitHub Copilot Chat**. Stay in the **same conversation**, do not clear it yet.
 
-    >**Note:** You reset context *between* lifecycle concepts, not within one. Refining research is still the Research phase.
+    >**Note:** You clear context *between* phases, not within one. Refining research is still the Research phase.
 
 1. Type the following follow-up question and press **Enter**:
 
@@ -150,19 +158,17 @@ In this task, you will deepen one area of the research. Research is iterative, a
 
     ![Follow-up question](./media/hve-e2t4s2.png)
 
-    >**Note:** This is an evidence gap about a material risk: failure behaviour. You are asking Research to close it explicitly instead of hoping the implementer guesses correctly.
-
 1. Wait for the agent to investigate and update the research document.
 
     ![Researcher updates the document](./media/hve-e2t4s3.png)
 
-1. Return to the research file in the editor. Confirm the new findings about error handling have been added.
+1. Return to the research file in the editor. Confirm the new findings about error handling have been added. Look for the temporary `.tmp` file and rename behaviour in `LocalFileWriter`, and for the `WriterError` it raises.
 
     ![Updated research document](./media/hve-e2t4s4.png)
 
     >**Note:** If the file appears unchanged, press **Ctrl+S** on the editor tab or close and reopen the file to pick up changes written on disk.
 
-1. Start a fresh chat by clicking the **+** icon at the top of the Copilot Chat panel, or by typing **/clear** and pressing **Enter**.
+1. Start a fresh chat by clicking the **+** icon at the top of the Copilot Chat panel, or by typing **/clear**.
 
     ![Clear context before the next phase](./media/hve-e2t4s5.png)
 
@@ -174,14 +180,13 @@ In this task, you will deepen one area of the research. Research is iterative, a
 
 In this exercise, you have successfully:
 
-- Decided that Research was warranted because a real evidence gap existed, and learned when RPI would skip or reuse Research instead.
-- Invoked `/rpi-research` against a real backlog item.
-- Observed a read-only surface gather evidence without writing code.
-- Located and inspected the research artifact in `.copilot-tracking/research/`.
+- Invoked the Task Researcher agent using the `/task-research` prompt against a real backlog item.
+- Observed a role-constrained agent gather evidence without writing source code.
+- Located and inspected the research document in `.copilot-tracking/research/`.
 - Verified findings by tracing citations back to real lines in the codebase.
-- Read the recommended approach and confirmed it aligns with the existing `WriterBase` pattern.
-- Closed a failure-behaviour evidence gap with a follow-up question.
-- Reset the chat context in preparation for the Plan phase.
+- Read the single recommended approach and confirmed it aligns with the existing `WriterBase` pattern.
+- Refined the research with a follow-up question covering error handling behaviour.
+- Cleared the chat context in preparation for the Plan phase.
 
 ### You have successfully completed the exercise. Click **Next >>** to continue to the next exercise.
 
