@@ -4,91 +4,78 @@
 
 ## 📘 Scenario
 
-Before you can evaluate Hypervelocity Engineering for your team at Contoso Data Services, you need to understand what it actually is, and you need a working environment. In this exercise you will learn why the RPI lifecycle exists and what problem it solves, install HVE Core into Visual Studio Code, confirm the RPI entry surfaces are available in GitHub Copilot Chat, prepare the Contoso pipeline repository, and complete your first interaction with an RPI surface.
+Before you can evaluate Hypervelocity Engineering for your team at Contoso Data Services, you need to understand what it actually is, and you need a working environment. In this exercise you will learn why the RPI workflow exists and what problem it solves, install HVE Core into Visual Studio Code, confirm the specialised agents and prompts are available in GitHub Copilot Chat, prepare the Contoso pipeline repository, and complete your first interaction with an HVE agent.
 
 ## 📖 Overview
 
-This exercise establishes both the conceptual foundation and the working environment for the rest of the lab. You will read a short introduction to HVE and the RPI lifecycle, then install and validate the tooling. The final task has you use an RPI surface for the first time, so that you arrive at the Research phase already familiar with how RPI behaves.
+This exercise establishes both the conceptual foundation and the working environment for the rest of the lab. You will read a short introduction to HVE and the RPI workflow, then install and validate the tooling. The final task has you talk to an HVE agent for the first time so that you arrive at the Research phase already familiar with how the agents behave.
 
-By the end of this exercise, you will have a validated HVE Core installation, a prepared repository, and a clear mental model of what each RPI phase is for, including when a phase is deliberately skipped.
+By the end of this exercise, you will have a validated HVE Core installation, a prepared repository, and a clear mental model of what each RPI phase is for.
 
 ## 🎯 Objectives
 
 In this exercise, you will complete the following tasks:
 
-- Task 1: Understand Hypervelocity Engineering and the RPI lifecycle
+- Task 1: Understand Hypervelocity Engineering and the RPI workflow
 - Task 2: Install the HVE Core extension
-- Task 3: Validate the RPI entry surfaces in GitHub Copilot Chat
+- Task 3: Validate the HVE Core agents and prompts in GitHub Copilot Chat
 - Task 4: Prepare the Contoso pipeline repository
-- Task 5: Your first interaction with an RPI surface
+- Task 5: Your first interaction with an HVE agent
 
-### Task 1: Understand Hypervelocity Engineering and the RPI Lifecycle
+### Task 1: Understand Hypervelocity Engineering and the RPI Workflow
 
-In this task, you will read a short introduction to HVE. There are no commands to run. Read it carefully, because every later exercise assumes you understand why the lifecycle is structured the way it is.
+In this task, you will read a short introduction to HVE. There are no commands to run. Read it carefully, because every later exercise assumes you understand why the phases are separated.
 
-1. **The problem HVE solves.** AI coding assistants perform well on small, contained tasks and poorly on complex ones. The reason is not raw capability. The reason is that an assistant conflates investigation with implementation. Asked to add a feature, it starts writing code immediately, inventing patterns rather than discovering the ones your codebase already uses, and it has no durable record of what it assumed, what it decided, or how it verified the result.
+1. **The problem HVE solves.** AI coding assistants perform well on small, contained tasks and poorly on complex ones. The reason is not raw capability. The reason is that an AI assistant cannot tell the difference between investigating and implementing. Asked to add a feature, it starts writing code immediately, inventing patterns rather than discovering the ones your codebase already uses. Microsoft's own documentation puts it bluntly: AI writes first and thinks never, because that is the only mode it has when it has unrestricted access to both research and implementation.
 
-1. **The insight behind RPI.** The fix is not a smarter model. The fix is giving each kind of work a clear contract and a durable output. **RPI** stands for **Research, Plan, Implement, Review**. Each phase has a defined scope, a defined set of permitted actions, and a dated artifact written to disk. Because state lives in those artifacts rather than in chat history, work stays inspectable, resumable, and reviewable.
+1. **The insight behind RPI.** The fix is not a smarter model. The fix is preventing the AI from doing certain things at certain times. RPI separates the work into four phases, each handled by a specialised agent that is only permitted to do that phase's work. A researcher that knows it will never write the code has no choice but to cite evidence.
 
-1. **The lifecycle.** RPI is not a fixed four-step march. It is a pipeline that starts from what you already know:
+1. **The four phases.** The workflow moves you from uncertainty to validated code through four steps:
 
-    `Task context & evidence` ➔ `Research (only when a gap exists)` ➔ `Plan` ➔ `Implement` ➔ `Review` ➔ `Follow-up`
+   | Phase | Prompt | Agent | What it does | What you get |
+   |---|---|---|---|---|
+   | Research | `/task-research` | Task Researcher | Investigates the codebase, docs and external sources. Does not write code. | A research document with evidence and sources |
+   | Plan | `/task-plan` | Task Planner | Turns research into phased, checkable steps with success criteria | A plan, an implementation details file and a planning log |
+   | Implement | `/task-implement` | Task Implementor | Executes the plan phase by phase against verified patterns | Working code and a change log |
+   | Review | `/task-review` | Task Reviewer | Validates the result against the plan and research | A review log with severity-graded findings and follow-up items |
 
-    Research is **conditional**. It runs only when the available evidence is inadequate for the requirements, acceptance criteria, dependencies, material risks, or architecture decisions the task depends on. If the evidence is already adequate, Research is satisfied and skipped, or an existing research document is reused, and the reason is logged.
+1. **The four principles.** Each phase enforces one principle:
 
-    >**Note:** Skipping Research when evidence is adequate is correct behaviour, not a shortcut. In this lab, the backlog item is to add Azure Blob Storage output to the writers package, and nothing yet documents what `WriterBase` requires or how `LocalFileWriter` handles failures. That is an evidence gap, which is why you will run Research in Exercise 02.
+   - **Research first, implementation never.** The researcher investigates and is barred from editing source code, which forces it to discover patterns rather than invent them.
+   - **Planning as a contract.** The plan sequences work with clear dependencies and success criteria, so the implementer has no room to improvise.
+   - **Constrained execution.** The implementer follows verified patterns instead of making fresh decisions mid-run.
+   - **Validation closure.** The reviewer checks the implementation against the documented specification, surfacing discrepancies early rather than at pull request time.
 
-1. **The entry surfaces.** You start RPI work through one of the following surfaces. Each has a behavioural contract:
+1. **Context engineering.** RPI requires you to **clear the chat context between phases** with `/clear` or a new chat. This is not housekeeping, it is the mechanism. If the planner can still see the researcher's exploratory dead ends, those discarded assumptions contaminate the plan. Because each phase writes its output to a file, clearing context loses nothing. The handoff is the document, not the conversation.
 
-    | Surface | Contract | Durable output |
-    |---|---|---|
-    | **RPI Agent** | User-selected lifecycle wrapper. Activates the applicable RPI skills under a single task identity. Manual by default, with "Full Auto" available on request. It is an entry surface, not an autonomous swarm of task workers. | Delegates to the artifacts below |
-    | `/rpi-research` | Read-only. Runs only when evidence is inadequate. Never modifies source code. | `.copilot-tracking/research/YYYY-MM-DD/{task_slug}-research.md` |
-    | `/rpi-plan` | Turns adequate evidence into a sequenced, verifiable implementation strategy without modifying source code. | `.copilot-tracking/plans/YYYY-MM-DD/{task_slug}-plan.md` and `.copilot-tracking/reviews/plans/YYYY-MM-DD/{task_slug}-plan-critique.md` |
-    | `/rpi-implement` | Executes an approved `Pxx` phase or `Pxx-Txx` task scope. | `.copilot-tracking/changes/YYYY-MM-DD/{task_slug}-changes.md` |
-    | `/rpi-review` | Read-only acceptance review of the finished work against the written requirements and plan. | `.copilot-tracking/reviews/logs/YYYY-MM-DD/{task_slug}-review.md` |
-    | `/rpi-challenger` | Exposes assumptions before you act, using adaptive skeptical questions. | Conversational |
-    | `/rpi-walkthrough` | Explains code or artifacts one segment at a time. | Conversational |
+1. **The RPI Agent.** HVE Core also ships **RPI Agent**, an autonomous orchestrator started with `/rpi`. It assesses how difficult a task is, runs Research, Plan, Implement and Review itself (using lightweight direct work for simple tasks and document-backed phases for hard ones), and finishes with a fifth step, **Discover**, which suggests follow-up work. In this lab you will drive each phase yourself with its own prompt so you can see exactly what each one does, and you will use the RPI Agent at the end to discover follow-up work.
 
-1. **Behavioural contracts, not personalities.** Four rules run through the lifecycle:
+1. **The four artifact types.** Everything HVE Core ships falls into one of four categories, and knowing them helps you read the extension's contents:
 
-    - **Evidence before action.** Research and Plan never modify source code, so the plan is built from evidence rather than improvisation.
-    - **Planning as a contract.** The plan uses stable `Pxx` phase and `Pxx-Txx` task identifiers, each with a checkable `Requirements:` record, and an independent critique records a `Pass`, `Revise`, or `Blocked` disposition.
-    - **Evidence-based completion.** During Implement, a checkbox is updated only after evidence exists that the work is done. If reality departs materially from the plan, the discovery is recorded in the change log, the affected plan tasks are updated after a decision is made, and only the dependent work pauses.
-    - **Acceptance review.** Review is read-only. It compares requirements, acceptance criteria, plan completion, critique dispositions, and change validation evidence.
+   - **Prompts** (`.prompt.md`) are entry points that capture your intent and route to an agent. These are the `/task-research`, `/task-plan` style commands you will use.
+   - **Agents** (`.agent.md`) orchestrate multi-step work and declare which tools they are allowed to use.
+   - **Instructions** (`.instructions.md`) encode coding standards and attach automatically. They are passive reference material.
+   - **Skills** (`SKILL.md` plus scripts) are active, executable utilities rather than guidance.
 
-1. **Two different questions at review time.** The review record deliberately separates **Execution Status** (`Complete`, `Partial`, or `Blocked`) from **Outcome** (`Conformant`, `Conformant with justified divergence`, `Defects found`, `Residual work`, or `Not accepted`). Work can be fully executed and still have defects, and work can be partially executed and still conform to what was accepted. Findings are recorded as severity-graded `RV-xxx` items, each routed to a designated destination.
+   The delegation flow runs Prompt to Agent to Instructions plus Skills.
 
-1. **Follow-up routing.** Findings do not simply pile up in a list. They are routed by what kind of problem they are:
-
-    | Finding type | Goes to |
-    |---|---|
-    | Defect in delivered work | Implementation |
-    | Decision gap | Planning |
-    | Evidence gap | Research |
-    | Residual work | A distinct backlog item |
-
-1. **Context hygiene.** Reset context with `/clear` or a fresh chat whenever you switch lifecycle concepts, for example from Research to Plan, or from Implement to Review. This is not housekeeping, it is the mechanism. Each phase writes its output to a dated file under `.copilot-tracking/`, so clearing context loses nothing. The handoff is the document, not the conversation.
-
-1. **Durable artifacts and the tracking folder.** Every RPI phase writes to the `.copilot-tracking/` folder in the repository, in dated subfolders named with the task slug. These files are working documents for the current task, and they are how one phase hands off to the next.
-
-    >**Note:** HVE is a framework in the sense of a process and a structural specification for packaging AI guidance. It is not a software framework. There is no SDK, no runtime and no library to import. This distinction matters when you explain HVE to your own team.
+   >**Note:** HVE is a framework in the sense of a process and a structural specification. It is not a software framework. There is no SDK, no runtime and no library to import. This distinction matters when you explain HVE to your own team.
 
 <question source="Questions/question-01.md" />
 
 ### Task 2: Install the HVE Core Extension
 
-In this task, you will install the HVE Core extension into Visual Studio Code. HVE Core is the open-source agent and prompt library published by Microsoft at `github.com/microsoft/hve-core`.
+In this task, you will install the HVE Core extension into Visual Studio Code. HVE Core is published by Microsoft and distributed through the Visual Studio Code Marketplace.
 
 1. In Visual Studio Code, open the **Extensions** view by pressing **Ctrl+Shift+X**, or by clicking the Extensions icon in the Activity Bar on the left.
 
     ![Open Extensions view](./media/hve-e1t2s1.png)
 
-1. In the Extensions search box, type **HVE Core (1)**. From the results, select the **HVE Core (2)** extension.
+1. In the Extensions search box, type **HVE Core (1)**. From the results, select the extension published by **ise-hve-essentials (2)**.
 
     ![Search for HVE Core](./media/hve-e1t2s2.png)
 
-    >**Note:** Select the extension whose publisher and repository link match the official `microsoft/hve-core` project. If more than one HVE Core variant appears, choose the standard **HVE Core** collection, which includes the RPI workflow this lab uses.
+    >**Note:** The extension identifier is `ise-hve-essentials.hve-core`. Make sure the publisher and the link to the `microsoft/hve-core` repository match before you install.
 
 1. Click **Install**.
 
@@ -98,11 +85,15 @@ In this task, you will install the HVE Core extension into Visual Studio Code. H
 
     ![Reload VS Code](./media/hve-e1t2s4.png)
 
-    >**Note:** The extension requires a working GitHub Copilot installation with Copilot Chat enabled. Both are pre-configured on your lab virtual machine.
+    >**Note:** The extension requires Visual Studio Code version 1.106.1 or higher and a working GitHub Copilot installation. Both are pre-configured on your lab virtual machine.
 
-1. After the reload, return to the **Extensions** view and confirm that **HVE Core** now appears under **Installed** with no error badge.
+1. After the reload, return to the **Extensions** view, select **HVE Core**, and check the version number shown on the extension page.
 
     ![HVE Core installed](./media/hve-e1t2s5.png)
+
+    >**Note:** This lab was written and validated against **HVE Core 3.2.2**. HVE Core evolves quickly, and later versions may rename or replace prompts. If your version is different, click the **gear icon** on the extension, select **Install Specific Version...**, and choose **3.2.2**. You can also turn off **Auto Update** from the same menu so the version does not change during the lab.
+
+1. Confirm that **HVE Core** appears under **Installed** with no error badge.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -111,38 +102,45 @@ In this task, you will install the HVE Core extension into Visual Studio Code. H
 
    <validation step="00000000-0000-0000-0000-000000000001" />
 
-### Task 3: Validate the RPI Entry Surfaces in GitHub Copilot Chat
+### Task 3: Validate the HVE Core Agents and Prompts in GitHub Copilot Chat
 
-In this task, you will confirm that the RPI entry surfaces are registered and available inside GitHub Copilot Chat. If they do not appear here, nothing later in the lab will work, so do not skip this check.
+In this task, you will confirm that the HVE Core agents and prompts are registered and available inside GitHub Copilot Chat. If they do not appear here, nothing later in the lab will work, so do not skip this check.
 
 1. Open **GitHub Copilot Chat** by pressing **Ctrl+Alt+I**.
 
     ![Open Copilot Chat](./media/hve-e1t3s1.png)
 
-1. In the chat panel, open the **agent picker** (the mode dropdown next to the chat input box) and confirm that **RPI Agent** is listed.
+1. In the Copilot Chat input area, click the **agent picker** (the dropdown at the bottom left of the input box, which shows the current agent or mode). A list of available agents will appear.
 
-    ![RPI Agent in the agent picker](./media/hve-e1t3s2.png)
+    ![List available agents](./media/hve-e1t3s2.png)
 
-    >**Note:** The RPI Agent is a **user-selected** lifecycle wrapper. Nothing activates it automatically. You choose it when you want one task identity carried across the lifecycle, and it works in manual mode by default. You will not select it in this lab, because you will drive each phase explicitly with its own prompt to see what each one does.
+1. Scroll the list and confirm that the following agents are present:
 
-1. Press **Escape** to dismiss the picker without changing your selection.
+    - **RPI Agent**
+    - **Task Researcher**
+    - **Task Planner**
+    - **Task Implementor**
+    - **Task Reviewer**
 
-1. Now confirm the RPI prompts are registered. In the Copilot Chat input box, type the **/** character. Scroll the list and confirm you can see all of the following:
+    ![HVE agents present](./media/hve-e1t3s3.png)
 
-    - **rpi-research**
-    - **rpi-plan**
-    - **rpi-implement**
-    - **rpi-review**
-    - **rpi-challenger**
-    - **rpi-walkthrough**
+    >**Note:** If these agents do not appear, the extension has installed but Copilot has not picked it up. Reload Visual Studio Code with **Ctrl+Shift+P**, then **Developer: Reload Window**, and check again. If they are still missing, your Copilot organisation policy may be blocking custom agents. Contact CloudLabs support.
 
-    ![RPI prompts present](./media/hve-e1t3s3.png)
+1. Press **Escape** to dismiss the agent list without changing your selection.
 
-    >**Note:** If these entries do not appear, the extension has installed but Copilot has not picked it up. Reload Visual Studio Code with **Ctrl+Shift+P**, then **Developer: Reload Window**, and check again. If they are still missing, your Copilot organisation policy may be blocking custom agents or prompts. Contact CloudLabs support.
+1. Now confirm the RPI prompts are registered. In the Copilot Chat input box, type **/task**. Confirm you can see **task-research**, **task-plan**, **task-implement** and **task-review**.
 
-1. Press **Escape** to dismiss the list.
+    ![RPI prompts present](./media/hve-e1t3s4.png)
 
-    >**Note:** The `/rpi-*` entries are the entry points you will type throughout the lab. The core four map to the phases of the lifecycle. `/rpi-challenger` and `/rpi-walkthrough` are specialised surfaces that support the lifecycle without being phases of it.
+    >**Note:** Type **/task** rather than **/rpi** to see the phase prompts. The list filters by the characters you type, so `/rpi` shows only the `/rpi` prompt.
+
+1. Clear the input box, type **/rpi**, and confirm that the **rpi** prompt appears, described as the autonomous Research-Plan-Implement-Review-Discover workflow.
+
+    ![The rpi prompt](./media/hve-e1t3s5.png)
+
+    >**Note:** The `/task-*` entries are **prompts**, the entry points you will type. Each one routes to the matching **agent** (`/task-research` to Task Researcher, and so on), which is why you do not need to select the agent yourself. This is the Prompt to Agent delegation flow described in Task 1.
+
+1. Clear the input box.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -171,17 +169,23 @@ In this task, you will open the sample repository, install its dependencies, con
 
     ![Explore the writers package](./media/hve-e1t4s4.png)
 
-    >**Note:** `WriterBase` is the abstract class every output writer extends. `local_writer.py` next to it is the existing implementation. Your backlog item is to add a Blob Storage writer that follows the same pattern. Do not write it yourself, the RPI lifecycle will.
+    >**Note:** `WriterBase` is the abstract class every output writer extends. `local_writer.py` next to it is the existing implementation. Your backlog item is to add a Blob Storage writer that follows the same pattern. Do not write it yourself, the RPI workflow will.
 
 1. Open **docs/conventions.md** and skim it.
 
     ![Read team conventions](./media/hve-e1t4s5.png)
 
-    >**Note:** This file documents the team's coding conventions. It is part of the task context and evidence that RPI draws on. The Research phase will discover it, the Plan phase will cite it, and the Review phase will check your implementation against it.
+    >**Note:** This file documents the team's coding conventions. The Research phase will discover it, and the Review phase will check your implementation against it. This is how HVE keeps AI output aligned with a team's existing standards.
+
+1. Open **.github/copilot-instructions.md**.
+
+    ![Read the Copilot instructions](./media/hve-e1t4s6.png)
+
+    >**Note:** This file points every agent at the architecture and conventions documents and states the rules that always apply. HVE Core agents follow the repository conventions in this file, which is why the workflow needs almost no repeated explanation from you.
 
 1. Right-click on the **contoso-pipeline (1)** folder in the Explorer, then select **Open in Integrated Terminal (2)**.
 
-    ![Open integrated terminal](./media/hve-e1t4s6.png)
+    ![Open integrated terminal](./media/hve-e1t4s7.png)
 
 1. Install the project dependencies by running:
 
@@ -189,7 +193,7 @@ In this task, you will open the sample repository, install its dependencies, con
     pip install -r requirements.txt
     ```
 
-    ![Install dependencies](./media/hve-e1t4s7.png)
+    ![Install dependencies](./media/hve-e1t4s8.png)
 
     >**Note:** Wait for the installation to complete. It may take a few minutes.
 
@@ -199,9 +203,9 @@ In this task, you will open the sample repository, install its dependencies, con
     pytest -q
     ```
 
-    ![Run the test suite](./media/hve-e1t4s8.png)
+    ![Run the test suite](./media/hve-e1t4s9.png)
 
-    >**Note:** All tests must pass before you continue. The Review phase later in this lab compares change validation evidence against this baseline, and it needs a clean starting point to do so.
+    >**Note:** All tests must pass before you continue. The Review phase later in this lab runs the project's tests, and it needs a clean baseline to compare against.
 
 1. Open the **.gitignore** file at the root of the repository and confirm it contains the following line. If it is not present, add it and press **Ctrl+S** to save.
 
@@ -209,7 +213,7 @@ In this task, you will open the sample repository, install its dependencies, con
     .copilot-tracking/
     ```
 
-    ![Confirm gitignore entry](./media/hve-e1t4s9.png)
+    ![Confirm gitignore entry](./media/hve-e1t4s10.png)
 
     >**Note:** `.copilot-tracking/` is where every RPI artifact is written. These are working documents for the current task and are deliberately kept out of source control.
 
@@ -220,39 +224,45 @@ In this task, you will open the sample repository, install its dependencies, con
 
    <validation step="00000000-0000-0000-0000-000000000003" />
 
-### Task 5: Your First Interaction with an RPI Surface
+### Task 5: Your First Interaction with an HVE Agent
 
-In this task, you will use an RPI surface for the first time. This is a deliberately small, read-only interaction so that you can see how RPI behaves before the real work begins.
+In this task, you will talk to an HVE agent for the first time. This is a deliberately small interaction so that you can see how the agents behave before the real work begins.
 
 1. Open **GitHub Copilot Chat** with **Ctrl+Alt+I**.
 
-1. In the chat input box, type **/rpi-walkthrough** and select it from the list.
+1. Click the **agent picker** and select **Task Researcher**.
 
-    ![Select rpi-walkthrough](./media/hve-e1t5s1.png)
+    ![Select Task Researcher](./media/hve-e1t5s1.png)
 
-1. After the prompt name, type the following and press **Enter**:
+1. In the chat input box, type the following question and press **Enter**:
 
     ```
-    src/pipeline/writers/base.py
+    What output writers does this pipeline currently support, and where are they defined?
     ```
 
-    ![Ask for a walkthrough of base.py](./media/hve-e1t5s2.png)
+    ![Ask the researcher a question](./media/hve-e1t5s2.png)
 
 1. Read the response. Note three things about how it answered:
 
-    - It explains the file **one segment at a time**, rather than dumping a summary of the whole file at once.
-    - It **did not modify any file**, even though it is looking at code.
-    - It **grounded its explanation in what it actually found** in your repository, not in what a typical abstract writer class usually looks like.
+    - It **cited specific files and line references** rather than describing the code in general terms.
+    - It **did not change any source code**, even though the question was about code.
+    - It **grounded its answer in what it actually found** in your repository, not in what a typical pipeline usually looks like.
 
-    ![Walkthrough response](./media/hve-e1t5s3.png)
+    ![Researcher response](./media/hve-e1t5s3.png)
 
-    >**Note:** The walkthrough surface exists so that you understand code or artifacts before you decide what to do with them. It is a good habit before a Plan review or a Review acceptance, and it is the same read-only discipline that Research and Review follow.
+    >**Note:** This is role specialisation in action. The researcher agent is constrained so that investigation is the only thing it can do, and it records what it finds in files under `.copilot-tracking/research/`. Compare this mentally with what plain Copilot Chat would have produced for the same question.
+
+1. In the Explorer, expand **.copilot-tracking**. If the researcher created a **research** folder for this question, delete that folder now (right-click it, then select **Delete**).
+
+    ![Remove the practice research files](./media/hve-e1t5s4.png)
+
+    >**Note:** That research was only a warm-up. Removing it means Exercise 02 starts from a clean folder and the Plan phase cannot pick up the wrong document.
 
 1. Now start a fresh chat by clicking the **+** icon at the top of the Copilot Chat panel, or by typing **/clear** in the chat input and pressing **Enter**.
 
-    ![Clear the chat context](./media/hve-e1t5s4.png)
+    ![Clear the chat context](./media/hve-e1t5s5.png)
 
-    >**Note:** Get into this habit now. You will reset context whenever you switch lifecycle concepts in this lab. This is the context hygiene rule from Task 1, and it is the single most commonly skipped step when teams adopt RPI.
+    >**Note:** Get into this habit now. You will clear context between every phase in this lab. This is the context engineering principle from Task 1, and it is the single most commonly skipped step when teams adopt RPI.
 
 <question source="Questions/question-02.md" />
 <question source="Questions/question-03.md" />
@@ -261,13 +271,12 @@ In this task, you will use an RPI surface for the first time. This is a delibera
 
 In this exercise, you have successfully:
 
-- Learned what Hypervelocity Engineering is, why the RPI lifecycle exists, and why Research runs only when an evidence gap exists.
-- Understood the lifecycle from task context and evidence through Follow-up, the entry surfaces and their behavioural contracts, and the durable artifact each one writes.
-- Understood how Review separates Execution Status from Outcome, and how findings are routed to implementation, planning, research, or the backlog.
-- Installed the HVE Core extension in Visual Studio Code.
-- Validated that the RPI Agent and the `/rpi-*` prompts are registered in GitHub Copilot Chat.
+- Learned what Hypervelocity Engineering is, why the RPI workflow exists, and what problem role specialisation and clearing context solve.
+- Understood the four RPI phases, the four principles behind them, the RPI Agent, and the four artifact types that HVE Core ships.
+- Installed the HVE Core extension from the Visual Studio Code Marketplace.
+- Validated that the RPI agents and the `/task-*` and `/rpi` prompts are registered in GitHub Copilot Chat.
 - Opened the Contoso pipeline repository, installed its dependencies, confirmed a clean test baseline, and excluded `.copilot-tracking/` from version control.
-- Completed a first, read-only interaction with `/rpi-walkthrough` and practised resetting context.
+- Completed a first interaction with the Task Researcher agent and observed how a role-constrained agent responds.
 
 ### You have successfully completed the exercise. Click **Next >>** to continue to the next exercise.
 
