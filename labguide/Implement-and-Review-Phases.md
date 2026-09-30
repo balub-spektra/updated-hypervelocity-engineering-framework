@@ -6,11 +6,11 @@
 
 You have an approved plan. The Contoso backlog item is now fully specified: which files to create, which patterns to follow, which line references to work from, and how each step will be judged complete.
 
-In this exercise you will execute that plan and then validate the result. The Task Implementor agent works phase by phase rather than generating everything at once, and you can ask it to pause after each phase, which gives you control points along the way. The Task Reviewer agent then checks the finished work against the written specification rather than against the conversation. Finally, you will use the RPI Agent to discover the follow-up work the workflow surfaced.
+In this exercise you will execute that plan and then validate the result. The Task Implementor agent works phase by phase rather than generating everything at once, and it can pause after each phase, which gives you control points along the way. The Task Reviewer agent then checks the finished work against the written specification rather than against the conversation. Finally, you will read the follow-up work the workflow surfaced and decide where each item belongs.
 
 ## 📖 Overview
 
-In this exercise, you will complete the RPI cycle. You will execute the plan one phase at a time, intervene mid-run to see how stop controls work, inspect the change log, run the test suite, and validate the implementation against the plan. You will close by running the RPI Agent's Discover step and routing the follow-up items.
+In this exercise, you will complete the RPI cycle. You will execute the first phase of the plan and check it, let the implementor finish the rest, inspect the change log, run the test suite, and run the review. You will close by routing the follow-up items to the right phase.
 
 By the end of this exercise, you will have a working Azure Blob Storage writer, a passing test suite, a change log, and a review log, all produced through a controlled workflow rather than a single large prompt.
 
@@ -22,49 +22,70 @@ In this exercise, you will complete the following tasks:
 - Task 2: Execute the remaining plan phases
 - Task 3: Inspect the change log and run the tests
 - Task 4: Run the Review phase
-- Task 5: Discover and route follow-up work
+- Task 5: Route follow-up work
 
 ### Task 1: Execute the First Plan Phase
 
-In this task, you will run the Implement phase with a stop after every phase, so you can see the granularity the workflow operates at.
+In this task, you will run the Implement phase with a pause after every phase, so you can see the granularity the workflow operates at.
 
 1. Confirm you are in a **fresh Copilot Chat conversation**. If not, click the **+** icon at the top of the panel.
 
-1. You need the exact path of your plan file. In the Explorer, right-click the plan file under `.copilot-tracking/plans/` and select **Copy Relative Path**.
+      ![Copy relative path](./media/e4t1s1.png)
 
-    ![Copy relative path](./media/hve-e4t1s2.png)
+1. Look at the **agent picker** at the bottom left of the chat box. If it still shows **Task Planner** from the last exercise, click it and select **Task Implementor**.
+
+
+    ![Copy relative path](./media/e4t1s2.png)
+
+    >**Note:** The picker keeps the last agent you used. Running `/task-implement` normally switches it for you, but checking first avoids the work landing with the wrong agent.
+
+1. In the Explorer, right-click your plan file under `.copilot-tracking/plans/` (the file ending in `-plan.instructions.md`) and select **Copy Relative Path**.
+
+    ![Copy relative path](./media/e4t1s3.png)
 
 1. In the chat input box, type the following, pasting your plan path in place of the placeholder. Press **Shift+Enter** after each line, then press **Enter** to send:
 
     ```
     /task-implement plan=.copilot-tracking/plans/YYYY-MM-DD/<task>-plan.instructions.md phaseStop=true
 
-    Treat every item in the plan's Success Criteria section as binding. That includes the partial-write test requirement I added by hand.
+    Treat every item in the plan's Success Criteria section as binding, including the requirement for tests that cover the partial-write failure path.
     ```
 
-    ![Invoke task-implement with a phase stop](./media/hve-e4t1s3.png)
+    ![Invoke task-implement with a phase stop](./media/e4t1s4.png)
 
-    >**Note:** `phaseStop=true` makes the implementer pause after each phase for your review. There is also `stepStop=true`, which pauses after every single step. Omit both and it works through the whole plan continuously. Confirm that the agent picker now shows **Task Implementor**.
+    >**Note:** `phaseStop=true` makes the implementor pause after each phase so you can review it. Confirm that the agent picker now shows **Task Implementor**.
 
-1. Watch the implementer work. It reads the plan, the details file and the research, creates the change log, and then carries out the first phase. It follows the details file rather than designing anything itself.
+1. Watch the implementor work. It reads the plan and the details file, creates the change log, and carries out **Phase 1** only. Then it stops and summarises what it did.
 
-    ![Implementer executing a phase](./media/hve-e4t1s4.png)
+    ![Implementor executing a phase](./media/e4t1s5.png)
 
     >**Note:** Notice that it is not designing anything. Every decision was made in the Plan phase. This is constrained execution, and it is why the output follows your existing patterns instead of introducing new ones.
 
-1. When the first phase completes, the implementer stops and summarises what it did. Review the diff of the files it created or changed. In the Source Control view (**Ctrl+Shift+G**), click a changed file to open the diff.
+1. While the implementor works, answer any prompt that appears in the same way each time:
 
-    ![Review the diff](./media/hve-e4t1s5.png)
+    | If you see | Do this |
+    |---|---|
+    | A box asking **Run pwsh command?** | Click **Allow** |
+    | A multiple-choice question | Choose the option the agent marks or recommends, usually the first, then click **Submit** |
+    | A bar at the bottom of the chat saying **N files changed**, with **Keep** and **Undo** | Click **Keep** |
 
-1. Check the code against the conventions in `docs/conventions.md`. Confirm the naming, type hints, docstrings and error handling match what the existing `LocalFileWriter` does.
+    ![Allow, answer and keep](./media/e4t1s6.png)
 
-    ![Compare against conventions](./media/hve-e4t1s6.png)
+    >**Note:** The commands are the ones the implementor needs, such as reading files and running `pytest`. **Keep** accepts the files the implementor wrote. **Undo** would throw them away, so do not click it.
+1. Confirm that the implementor stops after Phase 1 and presents a summary of completed changes before proceeding.    
 
-1. Open the plan file and confirm that the steps of Phase 1 are now ticked `[x]`.
+     ![Allow, answer and keep](./media/e4t1s7.png)
 
-    ![Plan checkboxes ticked](./media/hve-e4t1s7.png)
 
-    >**Note:** The implementer updates the plan as it goes. A ticked step and an entry in the change log are your evidence that the step was really done.
+1. Open the Source Control view (**Ctrl+Shift+G**). Confirm that one or more files are listed as new or changed. Click one to see the diff.
+
+    ![Review the diff](./media/e4t1s8.png)
+
+1. Open the plan file, press **Ctrl+F**, and search for `[x]`. Confirm you get matches. These are the steps of Phase 1 that the implementor ticked.
+
+    ![Plan checkboxes ticked](./media/e4t1s9.png)
+
+    >**Note:** The implementor ticks a step only after it has done it, and it records the work in the change log. A tick is your evidence that the step was done.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -75,43 +96,34 @@ In this task, you will run the Implement phase with a stop after every phase, so
 
 ### Task 2: Execute the Remaining Plan Phases
 
-In this task, you will let the implementer work through the rest of the plan.
+In this task, you will let the implementor finish the rest of the plan.
 
-1. Stay in the **same Copilot Chat conversation**. The implementer needs continuity across phases within a single Implement session.
-
-1. Type the following and press **Enter**:
-
-    ```
-    Continue with the next phase.
-    ```
-
-    ![Continue implementation](./media/hve-e4t2s2.png)
-
-1. Watch the implementer work through the phase, then review what it changed the same way you did in Task 1. Repeat the message above after each phase stops, until only the final validation phase remains. For that last stretch you can send:
+1. Stay in the **same chat**. Paste this and press **Enter**:
 
     ```
     Continue with all remaining phases without stopping.
     ```
 
-    ![Implementer progressing through phases](./media/hve-e4t2s3.png)
+    ![Continue implementation](./media/e4t2s1.png)
 
-    >**Note:** This step takes the longest in the lab, typically eight to twelve minutes. Use the time to keep reading the plan file alongside the chat, so you can see the mapping between planned steps and actual edits.
+1. Watch the implementor work through the remaining phases. Answer each prompt the same way as in Task 1: **Allow** for commands, the recommended option for questions, and **Keep** for the changed-files bar.
 
-1. If the implementer pauses to ask a question, answer it and let it continue. If it appears to drift from the plan, stop it by typing:
+    ![Implementor progressing through phases](./media/e4t2s2.png)
 
-    ```
-    Stop. Return to the plan and complete only the steps it specifies.
-    ```
+    >**Note:** This step takes the longest in the lab, typically eight to twelve minutes. Use the time to keep the plan file open beside the chat, and watch the steps get ticked one by one.
 
-    ![Stop control](./media/hve-e4t2s4.png)
 
-    >**Note:** These stop controls are part of the design. You are meant to be able to interrupt, correct and resume. An engineer who reads the diffs as they land catches drift in seconds. An engineer who waits until the end reviews a large change with no context.
 
-    >**Note:** Not every departure from the plan is drift. When the implementer finds that reality differs from what the plan assumed, it records the difference in the change log under additional or deviating changes, adds it to the planning log's discrepancy log, and may add new steps to the plan. That trail is what lets the reviewer judge the deviation later.
+1. Wait until the implementor reports that all phases are complete.
 
-1. Wait until the implementer reports that all plan phases are complete.
+    ![Implementation complete](./media/e4t2s3.png)
 
-    ![Implementation complete](./media/hve-e4t2s5.png)
+1. Open the plan file, press **Ctrl+F**, and search for `[ ]`. You should get **no matches**. Every step is now ticked.
+
+    
+    ![Implementor progressing through phases](./media/e4t2s4.png)
+
+    >**Note:** If you still find `[ ]`, send this in the same chat, then search again: `Continue with the steps that are not yet ticked in the plan.`
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -122,7 +134,7 @@ In this task, you will let the implementer work through the rest of the plan.
 
 ### Task 3: Inspect the Change Log and Run the Tests
 
-In this task, you will read what the implementer recorded and confirm the code actually works.
+In this task, you will read what the implementor recorded and confirm the code actually works.
 
 1. Open the change log file:
 
@@ -130,37 +142,45 @@ In this task, you will read what the implementer recorded and confirm the code a
     .copilot-tracking/changes/YYYY-MM-DD/<task>-changes.md
     ```
 
-    ![Open the change log](./media/hve-e4t3s1.png)
+    ![Open the change log](./media/e4t3s1.png)
 
-1. Read it. Confirm it lists every file created and every file modified, with a short statement of what changed in each, and that it ends with a release summary.
+1. Press **Ctrl+F** and search for each of these. Each one should be found:
 
-    ![Change log contents](./media/hve-e4t3s2.png)
+    - `### Added`
+    - `### Modified`
+    - `## Release Summary`
 
-    >**Note:** This is the artifact that makes a pull request reviewable. A reviewer reading this file knows the intent behind each change before opening a single diff. It is also one of the inputs the Review phase uses. The implementer also offers a commit message when it finishes. Keep it, but do not commit anything yet.
+    ![Change log contents](./media/e4t3s2.1.png)
+    ![Change log contents](./media/e4t3s2.2.png)
+    ![Change log contents](./media/e4t3s2.3.png)
 
-1. Open the integrated terminal at the repository root (**Ctrl+`**) and run the test suite:
+    >**Note:** The change log lists every file added and modified, with a short statement of what changed in each. It is the artifact that makes a pull request reviewable, and it is one of the inputs the Review phase uses. The implementor also offers a commit message when it finishes. Do not commit anything yet.
+
+1. Open the integrated terminal at the repository root (**Ctrl+`**) and run:
 
     ```
     pytest -q
     ```
 
-    ![Run the test suite](./media/hve-e4t3s3.png)
+    ![Run the test suite](./media/e4t3s3.png)
 
-1. Confirm all tests pass, including the new tests covering the blob writer.
+1. Confirm the last line says all tests passed, with no failures.
 
-    ![Tests passing](./media/hve-e4t3s4.png)
+    ![Tests passing](./media/e4t3s4.png)
 
-    >**Note:** If any test fails, do not fix it by hand. Report the failure to the implementer in chat and let it correct the work against the plan. Hand-patching breaks the audit trail that the change log and review log depend on.
+    >**Note:** If any test fails, do not fix it by hand. Send the failure to the implementor in the same chat and let it correct the work against the plan. Hand-patching breaks the audit trail that the change log and review log depend on.
 
-1. Run the test suite once more with verbose output to see the new test names:
+1. Run this command to look for the partial-write test:
 
     ```
-    pytest -v
+    pytest -v | Select-String -Pattern "partial"
     ```
 
-    ![Verbose test output](./media/hve-e4t3s5.png)
+    ![Find the partial-write test](./media/e4t3s5.png)
 
-    >**Note:** Look for a test covering the partial-write failure path. That is the success criterion **you** added by hand in Exercise 03, Task 4. Seeing it here is the proof that a human edit to the plan propagated all the way into the delivered code. If you cannot find one, do not add it yourself. Continue to the Review phase, which is designed to catch exactly this kind of gap.
+    You should see at least one test name. This is the requirement **you** added by hand in Exercise 03, and finding it here shows a human edit to the plan reaching the delivered code.
+
+    >**Note:** If no line appears, send this in the implementor chat, then run `pytest -q` again: `The plan's success criteria require tests for the partial-write failure path. Add them, update the change log, then run pytest -q.` Do not write the test yourself. This is a defect being routed back to implementation.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -171,13 +191,17 @@ In this task, you will read what the implementer recorded and confirm the code a
 
 ### Task 4: Run the Review Phase
 
-In this task, you will run the fourth RPI phase.
+In this task, you will run the Review phase.
 
 1. Start a **fresh Copilot Chat conversation** by clicking the **+** icon, or by typing **/clear**.
 
-    ![Fresh chat for the Review phase](./media/hve-e4t4s1.png)
+    ![Fresh chat for the Review phase](./media/e4t1s1.png)
 
-    >**Note:** This clear matters more than any of the others. A reviewer that can still see the implementer's reasoning will tend to accept it. A reviewer starting cold has to check the code against the written specification, which is the entire point.
+    >**Note:** This reset matters more than any of the others. A reviewer that can still see the implementor's reasoning tends to accept it. A reviewer starting cold has to check the work against the written record, which is the entire point.
+
+1. Look at the **agent picker**. If it still shows **Task Implementor**, click it and select **Task Reviewer**.
+
+     ![Invoke task-review](./media/e4t4s2.png)
 
 1. Type the following, pasting your plan path in place of the placeholder, and press **Enter**:
 
@@ -185,36 +209,95 @@ In this task, you will run the fourth RPI phase.
     /task-review plan=.copilot-tracking/plans/YYYY-MM-DD/<task>-plan.instructions.md
     ```
 
-    ![Invoke task-review](./media/hve-e4t4s2.png)
+    ![Invoke task-review](./media/e4t4s3.png)
 
-    >**Note:** The reviewer can locate the related research, details and change log from the plan's name and date. Naming the plan removes any doubt about which one it should review. Confirm that the agent picker now shows **Task Reviewer**.
+    >**Note:** Confirm that the agent picker now shows **Task Reviewer**. The reviewer finds the matching research, details and change log from the plan.
 
-1. Watch the reviewer work. It will read the plan, read the change log, validate each phase of the plan against the code, assess implementation quality and convention compliance, and run the project's tests.
+1. Wait for the reviewer to finish. Click **Allow** on any **Run pwsh command?** box, as in Task 1. It checks each plan phase against the code, checks quality and conventions, and runs the tests. Its final message includes a summary table with the **Review Log** path, the **Overall Status**, and counts of critical, major and minor findings.
 
-    ![Reviewer working](./media/hve-e4t4s3.png)
+    ![Reviewer working](./media/e4t4s4.png)
 
-1. Open the review log it produces:
+1. Open the review log. It is saved with the plan name, ending in `-review.md`:
 
     ```
     .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md
     ```
 
-    ![Open the review log](./media/hve-e4t4s4.png)
+    ![Open the review log](./media/e4t4s5.png)
 
-1. Read the review. Confirm it covers the following:
+1. Press **Ctrl+F** and search for `status`, `critical`, `major` and `minor`. Each should be found.
 
-    - Whether each plan phase was completed, with evidence.
-    - Findings graded **critical**, **major** or **minor**, with counts.
-    - Convention compliance against `docs/conventions.md`.
-    - Results of the lint, build and test commands it ran.
-    - **Follow-up items**, separated into work deferred from the plan and work discovered during the review.
-    - An **overall status** of Complete, Needs Rework, or Blocked.
+    ![Review log contents](./media/e4t4s6.1.png)
 
-    ![Review log contents](./media/hve-e4t4s5.png)
+    ![Review log contents](./media/e4t4s6.2.png)
 
-    >**Note:** Findings are routed, not just listed. Critical and major findings go back to implementation as corrections. Minor findings and follow-up items become later work. A finding such as a missing docstring on a new public method is a typical minor item. The reviewer also leaves per-phase validation files under `.copilot-tracking/reviews/rpi/`.
+   
 
-    >**Note:** If the overall status is **Needs Rework**, use the review log to drive a fix. Start a fresh chat, open the review log, and run `/task-implement Address the findings found in the review document`, then run `/task-review` again.
+    >**Note:** The review log records the severity counts, the result for each plan phase, the test command results, and the follow-up work. The overall status is one of **Complete**, **Needs Rework** or **Blocked**.
+
+    >**Note:** Your findings will differ from other learners'. A typical minor finding is a missing docstring on a new method. What matters is that the review exists, that it graded its findings, and that it gave an overall status.
+
+1. Look at the overall status.
+
+    | If the status is | What to do |
+    |---|---|
+    | **Complete** | Continue to Task 5. |
+    | **Needs Rework** | Do the rework steps below, then come back to this table. |
+    | **Blocked** | Read what blocks the review, resolve it, then run `/task-review` again. |
+
+    >**Note:** **Needs Rework** means the review found at least one **critical** or **major** finding. Minor findings alone do not cause it. It is a normal result. The workflow is designed to send the work back and check it again.
+
+1. **Only if the status is Needs Rework:** find the findings that caused it. Press **Ctrl+F** in the review log and search for `critical`, then `major`. Read each one and decide which kind it is:
+
+    | Kind of finding | How to recognise it | What to do |
+    |---|---|---|
+    | **Code finding** | It names a file, a function or a failing test. | Use the **code fix** prompt in the next step. |
+    | **Decision finding** | It names no file. It says a choice is missing, such as identity, provisioning, limits, concurrency or retention. | Use the **decision fix** prompt in the next step. |
+
+    ![Find the blocking findings](./media/e4t4s6.png)
+
+    >**Note:** A decision finding can't be fixed by changing code. If you send it to the implementor as a code fix, the next review returns **Needs Rework** again. Fix it by writing the decision down in the plan and the docs.
+
+1. **Only if the status is Needs Rework:** start a fresh chat, select **Task Implementor** in the agent picker, and send the prompt that matches your findings. Paste your review log path.
+
+    For **code findings**:
+
+    ```
+    /task-implement Fix every critical and major finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. Update the change log, then run pytest -q.
+    ```
+
+    For **decision findings**:
+
+    ```
+    /task-implement Resolve every critical and major decision finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. For each open decision, record an explicit choice and its reason in the plan, the README and the conventions docs. Do not change code unless a decision requires it. Update the change log, then run pytest -q.
+    ```
+
+    If the review has both kinds, send the code fix prompt first, then the decision fix prompt.
+
+    ![Send the findings back to the implementor](./media/e4t4s7.png)
+
+    >**Note:** Naming the review log in the message makes sure the implementor reads it. Answer any **Run pwsh command?** box with **Allow**, and click **Keep** on the changed-files bar, as in Task 1.
+
+1. When the implementor finishes, run `pytest -q` in the terminal and confirm every test passes. For decision findings, also open the plan and the README and confirm the decisions are written there.
+
+1. **Move the old review files out of the way.** In the Explorer, create a folder called `review-archive` inside `.copilot-tracking`. Drag these two items into it:
+
+    - `.copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md`
+    - the folder `.copilot-tracking/reviews/rpi`
+
+    ![Archive the old review files](./media/e4t4s8.png)
+
+    >**Note:** This step is the one that makes the second review different from the first. When the reviewer starts, it looks for an existing review log and completed validation files, and it resumes from them and keeps the results it already has. If you leave the old files in place, it repeats its earlier verdict without checking the new code. Moving them forces a fresh review, and you still keep the old log as evidence.
+
+1. **Review again.** Start a fresh chat, select **Task Reviewer**, and run the same command as before:
+
+    ```
+    /task-review plan=.copilot-tracking/plans/YYYY-MM-DD/<task>-plan.instructions.md
+    ```
+
+    Open the new review log and check the overall status again.
+
+    >**Note:** The number of critical and major findings should be lower, and the status should now be **Complete**. If the same finding appears again, the implementor did not fix it. For a code finding, open the finding and check that the named file changed. For a decision finding, check that the decision is written in the plan and the docs. Then repeat the steps above once more, this time adding the finding text to your message. Minor findings alone do not block you.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -223,42 +306,40 @@ In this task, you will run the fourth RPI phase.
 
    <validation step="00000000-0000-0000-0000-000000000011" />
 
-### Task 5: Discover and Route Follow-up Work
+### Task 5: Route Follow-up Work
 
-In this task, you will use the RPI Agent's Discover step to look for follow-up work and decide where each item should go. Discover is the fifth step of the RPI Agent's cycle, and it is a useful last look before a pull request.
+In this task, you will read the follow-up work the workflow found and decide which phase each item belongs to.
 
-1. Start a **fresh Copilot Chat conversation** by clicking the **+** icon.
+1. In the review log, press **Ctrl+F** and search for `follow-up`. Read the items listed. They are split into work **deferred from scope** and work **discovered during review**.
 
-1. In the chat input box, type the following and press **Enter**:
+    ![Follow-up items in the review log](./media/hve-e4t5s2.png)
+
+1. Open the planning log:
 
     ```
-    /rpi suggest
+    .copilot-tracking/plans/logs/YYYY-MM-DD/<task>-log.md
     ```
 
-    ![Invoke rpi suggest](./media/hve-e4t5s2.png)
+    Press **Ctrl+F** and search for `Follow-On`. Read the suggested follow-on work.
 
-    >**Note:** `/rpi` starts the **RPI Agent**, and `suggest` sends it straight to the Discover step. It reads the artifacts in `.copilot-tracking/` and the code, then proposes a short numbered list of next work. If it begins to implement something instead, stop it with the stop message from Task 2. This task is only about reading its suggestions.
+    ![Suggested follow-on work](./media/hve-e4t5s3.png)
 
-1. Read the list it presents. Typical suggestions concern retry behaviour, credential handling, large-file streaming, and concurrent write conflicts, alongside any follow-up items from your review log.
+    >**Note:** Typical items are retry behaviour, credential handling, large-file streaming and concurrent writes to the same blob. Not every item is worth acting on. Its value is that the next steps are written down while the context is fresh.
 
-    ![Suggested next work](./media/hve-e4t5s3.png)
-
-    >**Note:** Do not reply with an option number. Replying with a number starts a new RPI cycle for that item, which is not part of this lab. Not every suggestion is worth acting on. Its value is that it makes the next steps visible while the context is fresh.
-
-1. Compare the suggestions with the follow-up items in your review log and the **suggested follow-on work** in your planning log. For each item you would act on, decide where it belongs, using the routing below:
+1. For each item, use this table to decide where it goes:
 
     | What the item is | Where it goes | Prompt |
     |---|---|---|
-    | The delivered code is wrong or a criterion was missed | Implement | `/task-implement` |
-    | Scope that the plan left out | Plan | `/task-plan` |
+    | The delivered code is wrong, or a success criterion was missed | Implement | `/task-implement` |
+    | Scope the plan left out | Plan | `/task-plan` |
     | Missing technical knowledge | Research | `/task-research` |
     | Valid work outside this change | A separate backlog item | A new RPI cycle |
 
     ![Route the follow-up](./media/hve-e4t5s4.png)
 
-    >**Note:** The Task Reviewer offers the same routes as buttons when it finishes: **Research More**, **Revise Plan** and **Implement Immediately**. Routing a finding to the right phase keeps it from being lost in a comment thread.
+    >**Note:** The Task Reviewer's own handoff uses the same routes: clear the chat with `/clear`, open the review log, then start `/task-implement`, `/task-research` or `/task-plan`. Routing each finding to the right phase keeps it from being lost in a comment thread.
 
-1. Review the six artifacts you produced across this lab. Open each one in turn:
+1. Open each of the six files you produced across this lab, one at a time:
 
     ```
     .copilot-tracking/research/YYYY-MM-DD/<topic>-research.md
@@ -280,11 +361,11 @@ In this task, you will use the RPI Agent's Discover step to look for follow-up w
 In this exercise, you have successfully:
 
 - Executed the first plan phase with `/task-implement`, using an explicit plan path and a phase stop.
-- Reviewed the resulting diff against the team's documented conventions.
-- Executed the remaining plan phases and practised the stop controls for interrupting a drifting run.
+- Checked the result in Source Control and in the ticked plan steps.
+- Executed the remaining phases and confirmed every plan step was ticked.
 - Inspected the change log and confirmed the test suite passes, including the criterion you added by hand.
-- Ran the Review phase with `/task-review` and read the review log covering findings, conventions, test results, follow-up items and overall status.
-- Used the RPI Agent's Discover step to find follow-up work, and routed each item to the right phase.
+- Ran the Review phase with `/task-review` and read the review log covering severity counts, test results, follow-up items and overall status.
+- Routed follow-up work to implementation, planning, research, or the backlog.
 - Reviewed the six RPI artifacts as a single audit trail.
 
 ## 🏁 Lab Conclusion

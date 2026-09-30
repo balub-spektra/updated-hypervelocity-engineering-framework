@@ -33,7 +33,7 @@ In this task, you will invoke the Task Researcher agent using the `/task-researc
 
 1. If the chat panel shows any earlier conversation, start a fresh one by clicking the **+** icon at the top of the panel.
 
-    ![Start a fresh chat](./media/hve-e2t1s3.png)
+    ![Start a fresh chat](./media/e1t5s6.png)
 
     >**Note:** Every RPI phase begins in a clean context. This is not optional.
 
@@ -53,13 +53,13 @@ In this task, you will invoke the Task Researcher agent using the `/task-researc
     Focus on approaches that match the existing patterns in the codebase. Do not write any code.
     ```
 
-    ![Invoke task-research](./media/hve-e2t1s4.png)
+    ![Invoke task-research](./media/e2t1s4.png)
 
     >**Note:** The `/task-research` prompt automatically routes to the **Task Researcher** agent. You do not need to select the agent yourself. This is the Prompt to Agent delegation flow. Confirm that the agent picker at the bottom of the chat input now shows **Task Researcher**.
 
 1. Watch the agent work. You will see it read files from the repository, follow references between them, and consult external documentation. This can take several minutes.
 
-    ![Researcher gathering evidence](./media/hve-e2t1s5.png)
+    ![Researcher gathering evidence](./media/e2t1s5.png)
 
     >**Note:** Notice what it is doing and what it is not doing. It is reading `base.py`, `local_writer.py`, `requirements.txt` and `docs/conventions.md`. It is only writing files under `.copilot-tracking/research/`, and it is not creating or editing any file in `src/`. If you see it propose or write code in `src/`, it has drifted from its role, and you should tell it to continue researching rather than implementing.
 
@@ -67,7 +67,7 @@ In this task, you will invoke the Task Researcher agent using the `/task-researc
 
 1. Wait until the agent reports that the research document has been written. It will state the file path in its final message.
 
-    ![Research complete](./media/hve-e2t1s6.png)
+    ![Research complete](./media/e2t1s7.png)
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -82,7 +82,7 @@ In this task, you will locate and open the research document the agent produced.
 
 1. In the Visual Studio Code Explorer pane, expand the **.copilot-tracking (1)** folder, then **research (2)**, then the folder named with **today's date (3)**.
 
-    ![Locate the research folder](./media/hve-e2t2s1.png)
+    ![Locate the research folder](./media/e2t2s1.png)
 
     >**Note:** If `.copilot-tracking` is not visible, it is being hidden as an ignored folder. Open the Explorer's overflow menu (the **...** at the top of the pane) and ensure hidden files are shown, or open the file directly with **Ctrl+P** and type `research`.
 
@@ -92,7 +92,7 @@ In this task, you will locate and open the research document the agent produced.
     .copilot-tracking/research/YYYY-MM-DD/<topic>-research.md
     ```
 
-    ![Open the research document](./media/hve-e2t2s2.png)
+    ![Open the research document](./media/e2t2s2.png)
 
     >**Note:** The exact topic name depends on how the agent interpreted your prompt. It may be `blob-storage-research.md`, `azure-blob-storage-research.md` or similar. Any of these is correct. Write down the exact file name, because you will point the Plan phase at it in the next exercise. You may also see a **subagents** folder next to it holding the notes of the helper agents the researcher used. The main document is the one named `...-research.md` directly under the dated folder.
 
@@ -105,13 +105,16 @@ In this task, you will locate and open the research document the agent produced.
     - **Potential next research**, meaning open questions the agent chose not to chase.
     - A **recommended approach** at the end.
 
-    ![Research document contents](./media/hve-e2t2s3.png)
+    ![Research document contents](./media/e2t2s3.png)
 
-1. Scroll to any finding that references your codebase. Hold **Ctrl** and click one of the file references to jump to the code it cites.
+1. Scroll to any finding that references your codebase and verify the cited file. If `Ctrl + Click` does not navigate directly to the code, use Quick Open:
+   - Press `Ctrl + P` to open the search bar.
+   - Type the name of the file mentioned in the research document (for example, `base.py` or `local_writer.py`).
+   - Press `Enter` to open it directly.
 
-    ![Follow a citation](./media/hve-e2t2s4.png)
+   ![Follow a citation](./media/e2t2s4.png)
 
-    >**Note:** Verify that the citation is accurate. This is the point of the Research phase. A finding you can trace back to a real line of code is knowledge. A finding you cannot trace is a guess, and if you find one, correct it now before it propagates into the plan.
+   >**Note:** Verify that the citation is accurate. This is the point of the Research phase. A finding you can trace back to a real line of code is knowledge. A finding you cannot trace is a guess, and if you find one, correct it now before it propagates into the plan.
 
    > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
    - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
@@ -122,57 +125,82 @@ In this task, you will locate and open the research document the agent produced.
 
 ### Task 3: Read the Evidence and the Recommended Approach
 
-In this task, you will focus on the two properties that make a research document useful downstream.
+In this task, you will make sure the research document has the two things every good research document needs: **sources** for its claims, and **one clear approach**.
 
-1. Scroll to the **references** or **sources** parts of the research document.
+1. Stay in the **same chat** as Task 1. Paste this and press **Enter**:
 
-    ![Sources section](./media/hve-e2t3s1.png)
+    ```
+    Update the research document you already created. Do not create a new file. Make sure it contains these two sections, each as a Markdown heading with exactly this title:
 
-    >**Note:** Every claim should be attributable. Internal claims point at files and line ranges in this repository. External claims point at documentation URLs. A research document without sources is just a longer guess.
+    ## Sources
+    A list of at least three full https://learn.microsoft.com links for the Azure claims.
 
-1. Scroll to the **selected approach** or **recommended approach** section.
+    ## Recommended Approach
+    Exactly one approach. It must say that the new writer extends WriterBase and implements _write.
+    ```
 
-    ![Recommended approach](./media/hve-e2t3s2.png)
+    ![Ask for sources and the recommended approach](./media/e2t3s1.png)
 
-    >**Note:** The Task Researcher may evaluate several alternatives, but it concludes with **one recommended approach** and the reasons for choosing it. This is deliberate. A plan built from three competing options is not a contract, and the Implement phase would have to make design decisions at execution time, which is exactly what RPI is designed to prevent.
+    >**Note:** Every claim in research should have a source, and the document should commit to one approach. Your document may already have both under other names. This message makes sure they exist under the same names for everyone.
 
-1. Read the recommended approach and check it against what you saw in `base.py` during Exercise 01. Confirm that it proposes extending `WriterBase` and implementing `_write`, rather than inventing a new abstraction.
+1. Wait for the agent to finish. Then open the research document. If it looks unchanged, press **Ctrl+S**, or close and reopen the file.
 
-    ![Approach aligns with existing pattern](./media/hve-e2t3s3.png)
+    ![Research document updated](./media/e2t3s2.png)
 
-    >**Note:** This is the difference between discovered patterns and invented ones. Plain Copilot, asked to write a blob writer, would commonly produce a standalone class with its own interface, because it never looked at what you already had.
+1. Press **Ctrl+F** and search for `## Sources`. Read the list of links underneath.
+
+    ![Sources section](./media/e2t3s3.png)
+
+    >**Note:** Internal claims point at files and lines in this repository. External claims point at documentation links. A document without sources is just a longer guess.
+
+1. Press **Ctrl+F** and search for `## Recommended Approach`. Read it and confirm it says the new writer **extends `WriterBase`** and **implements `_write`**.
+
+    ![Recommended approach](./media/e2t3s4.png)
+
+    >**Note:** This is the difference between discovered patterns and invented ones. Plain Copilot, asked to write a blob writer, would usually produce a standalone class with its own interface, because it never looked at what you already had.
+
+    >**Note:** If either heading is missing, send the same message again.
 
 ### Task 4: Refine the Research with a Follow-up
 
-In this task, you will deepen one area of the research. Research is iterative, and refining it now is far cheaper than discovering a gap during implementation.
+In this task, you will add one more finding to the research. Adding it now takes one message. Finding the gap during implementation would take a rework cycle.
 
-1. Return to **GitHub Copilot Chat**. Stay in the **same conversation**, do not clear it yet.
+1. Stay in the **same chat**. Do not clear it yet.
 
-    >**Note:** You clear context *between* phases, not within one. Refining research is still the Research phase.
+    >**Note:** You clear the chat between phases, not within one. Refining research is still the Research phase.
 
-1. Type the following follow-up question and press **Enter**:
+1. Paste this and press **Enter**:
 
     ```
-    How does LocalFileWriter handle write failures and partial writes? The blob writer needs to match that behaviour exactly. Add your findings to the research document.
+    How does LocalFileWriter handle write failures and partial writes? The blob writer needs to match that behaviour exactly. Add your findings to the research document you already created, as a Markdown heading titled exactly "## LocalFileWriter Failure Handling". Do not create a new file.
     ```
 
-    ![Follow-up question](./media/hve-e2t4s2.png)
+    ![Follow-up question](./media/e2t4s2.png)
 
-1. Wait for the agent to investigate and update the research document.
+1. Wait for the agent to finish. Then open the research document. If it looks unchanged, press **Ctrl+S**, or close and reopen the file.
 
-    ![Researcher updates the document](./media/hve-e2t4s3.png)
+    ![Researcher updates the document](./media/e2t4s3.png)
 
-1. Return to the research file in the editor. Confirm the new findings about error handling have been added. Look for the temporary `.tmp` file and rename behaviour in `LocalFileWriter`, and for the `WriterError` it raises.
+1. Press **Ctrl+F** and search for `## LocalFileWriter Failure Handling`. Read the section. It explains the temporary `.tmp` file, the rename into place, and the `WriterError` that `LocalFileWriter` raises.
 
-    ![Updated research document](./media/hve-e2t4s4.png)
+    ![Failure handling section](./media/e2t4s4.png)
 
-    >**Note:** If the file appears unchanged, press **Ctrl+S** on the editor tab or close and reopen the file to pick up changes written on disk.
+    >**Note:** If the heading is missing, send the same message again.
 
-1. Start a fresh chat by clicking the **+** icon at the top of the Copilot Chat panel, or by typing **/clear**.
+1. In the Explorer, open the dated folder under `.copilot-tracking/research/`. There should be only **one** file ending in `-research.md`.
+    ![Failure handling section](./media/e2t4s5.png)
 
-    ![Clear context before the next phase](./media/hve-e2t4s5.png)
+    >**Note:** If the agent created a second file, tell it to merge the content into the first file and delete the duplicate. Otherwise the Plan phase may pick the wrong file.
 
-    >**Note:** The Research phase is complete and its output is on disk. Everything the Plan phase needs is in that file, so nothing is lost by discarding the conversation. This is what artifact-driven handoff means.
+1. Start a fresh chat by clicking the **+** icon, or by typing **/clear**.
+
+    ![Clear context before the next phase](./media/e2t4s6.png)
+
+    >**Note:** The research is saved in the file, so nothing is lost. The Plan phase reads the file, not this conversation. This is what artifact-driven handoff means.
+
+
+
+
 
 <question source="Questions/question-04.md" />
 

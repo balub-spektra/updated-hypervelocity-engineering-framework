@@ -69,27 +69,27 @@ In this task, you will install the HVE Core extension into Visual Studio Code. H
 
 1. In Visual Studio Code, open the **Extensions** view by pressing **Ctrl+Shift+X**, or by clicking the Extensions icon in the Activity Bar on the left.
 
-    ![Open Extensions view](./media/hve-e1t2s1.png)
+    ![Open Extensions view](./media/e1t2s1.png)
 
 1. In the Extensions search box, type **HVE Core (1)**. From the results, select the extension published by **ise-hve-essentials (2)**.
 
-    ![Search for HVE Core](./media/hve-e1t2s2.png)
+    ![Search for HVE Core](./media/e1t2s2.png)
 
     >**Note:** The extension identifier is `ise-hve-essentials.hve-core`. Make sure the publisher and the link to the `microsoft/hve-core` repository match before you install.
 
 1. Click **Install**.
 
-    ![Install HVE Core](./media/hve-e1t2s3.png)
+    ![Install HVE Core](./media/e1t2s3.png)
 
 1. Wait for the installation to complete. When prompted, click **Reload** to restart Visual Studio Code.
 
-    ![Reload VS Code](./media/hve-e1t2s4.png)
+    ![Reload VS Code](./media/vscode.png)
 
     >**Note:** The extension requires Visual Studio Code version 1.106.1 or higher and a working GitHub Copilot installation. Both are pre-configured on your lab virtual machine.
 
 1. After the reload, return to the **Extensions** view, select **HVE Core**, and check the version number shown on the extension page.
 
-    ![HVE Core installed](./media/hve-e1t2s5.png)
+    ![HVE Core installed](./media/e1t2s5.png)
 
     >**Note:** This lab was written and validated against **HVE Core 3.2.2**. HVE Core evolves quickly, and later versions may rename or replace prompts. If your version is different, click the **gear icon** on the extension, select **Install Specific Version...**, and choose **3.2.2**. You can also turn off **Auto Update** from the same menu so the version does not change during the lab.
 
@@ -108,11 +108,11 @@ In this task, you will confirm that the HVE Core agents and prompts are register
 
 1. Open **GitHub Copilot Chat** by pressing **Ctrl+Alt+I**.
 
-    ![Open Copilot Chat](./media/hve-e1t3s1.png)
+    ![Open Copilot Chat](./media/e1t3s1.png)
 
 1. In the Copilot Chat input area, click the **agent picker** (the dropdown at the bottom left of the input box, which shows the current agent or mode). A list of available agents will appear.
 
-    ![List available agents](./media/hve-e1t3s2.png)
+    ![List available agents](./media/e1t3s2.png)
 
 1. Scroll the list and confirm that the following agents are present:
 
@@ -122,7 +122,7 @@ In this task, you will confirm that the HVE Core agents and prompts are register
     - **Task Implementor**
     - **Task Reviewer**
 
-    ![HVE agents present](./media/hve-e1t3s3.png)
+    ![HVE agents present](./media/e1t3s3.png)
 
     >**Note:** If these agents do not appear, the extension has installed but Copilot has not picked it up. Reload Visual Studio Code with **Ctrl+Shift+P**, then **Developer: Reload Window**, and check again. If they are still missing, your Copilot organisation policy may be blocking custom agents. Contact CloudLabs support.
 
@@ -130,13 +130,13 @@ In this task, you will confirm that the HVE Core agents and prompts are register
 
 1. Now confirm the RPI prompts are registered. In the Copilot Chat input box, type **/task**. Confirm you can see **task-research**, **task-plan**, **task-implement** and **task-review**.
 
-    ![RPI prompts present](./media/hve-e1t3s4.png)
+    ![RPI prompts present](./media/e1t3s5.png)
 
     >**Note:** Type **/task** rather than **/rpi** to see the phase prompts. The list filters by the characters you type, so `/rpi` shows only the `/rpi` prompt.
 
 1. Clear the input box, type **/rpi**, and confirm that the **rpi** prompt appears, described as the autonomous Research-Plan-Implement-Review-Discover workflow.
 
-    ![The rpi prompt](./media/hve-e1t3s5.png)
+    ![The rpi prompt](./media/e1t3s6.png)
 
     >**Note:** The `/task-*` entries are **prompts**, the entry points you will type. Each one routes to the matching **agent** (`/task-research` to Task Researcher, and so on), which is why you do not need to select the agent yourself. This is the Prompt to Agent delegation flow described in Task 1.
 
@@ -155,37 +155,37 @@ In this task, you will open the sample repository, install its dependencies, con
 
 1. In Visual Studio Code, click **File (1)** from the top left corner, then select **Open Folder (2)**.
 
-    ![Open Folder](./media/hve-e1t4s1.png)
+    ![Open Folder](./media/e1t4s1.png)
 
 1. Navigate to **C:\Users\demouser\Downloads (1)**, press **Enter**, select **contoso-pipeline (2)**, and then click **Select Folder (3)**.
 
-    ![Select contoso-pipeline](./media/hve-e1t4s2.png)
+    ![Select contoso-pipeline](./media/e1t4s2.png)
 
 1. Click **Yes, I trust the authors**.
 
-    ![Trust the authors](./media/hve-e1t4s3.png)
+    ![Trust the authors](./media/e1t4s3.png)
 
 1. In the Explorer pane, expand **src (1)**, then **pipeline (2)**, then **writers (3)**. Select **base.py (4)** and read the `WriterBase` class.
 
-    ![Explore the writers package](./media/hve-e1t4s4.png)
+    ![Explore the writers package](./media/e1t4s4.png)
 
     >**Note:** `WriterBase` is the abstract class every output writer extends. `local_writer.py` next to it is the existing implementation. Your backlog item is to add a Blob Storage writer that follows the same pattern. Do not write it yourself, the RPI workflow will.
 
 1. Open **docs/conventions.md** and skim it.
 
-    ![Read team conventions](./media/hve-e1t4s5.png)
+    ![Read team conventions](./media/e1t4s5.png)
 
     >**Note:** This file documents the team's coding conventions. The Research phase will discover it, and the Review phase will check your implementation against it. This is how HVE keeps AI output aligned with a team's existing standards.
 
 1. Open **.github/copilot-instructions.md**.
 
-    ![Read the Copilot instructions](./media/hve-e1t4s6.png)
+    ![Read the Copilot instructions](./media/e1t4s6.png)
 
     >**Note:** This file points every agent at the architecture and conventions documents and states the rules that always apply. HVE Core agents follow the repository conventions in this file, which is why the workflow needs almost no repeated explanation from you.
 
-1. Right-click on the **contoso-pipeline (1)** folder in the Explorer, then select **Open in Integrated Terminal (2)**.
+1. Open the integrated terminal by pressing `Ctrl+Shift+`` or by clicking the **Terminal** icon..
 
-    ![Open integrated terminal](./media/hve-e1t4s7.png)
+    ![Open integrated terminal](./media/e1t4s7.png)
 
 1. Install the project dependencies by running:
 
@@ -193,7 +193,7 @@ In this task, you will open the sample repository, install its dependencies, con
     pip install -r requirements.txt
     ```
 
-    ![Install dependencies](./media/hve-e1t4s8.png)
+    ![Install dependencies](./media/e1t4s8.png)
 
     >**Note:** Wait for the installation to complete. It may take a few minutes.
 
@@ -203,7 +203,7 @@ In this task, you will open the sample repository, install its dependencies, con
     pytest -q
     ```
 
-    ![Run the test suite](./media/hve-e1t4s9.png)
+    ![Run the test suite](./media/e1t4s9.png)
 
     >**Note:** All tests must pass before you continue. The Review phase later in this lab runs the project's tests, and it needs a clean baseline to compare against.
 
@@ -213,7 +213,7 @@ In this task, you will open the sample repository, install its dependencies, con
     .copilot-tracking/
     ```
 
-    ![Confirm gitignore entry](./media/hve-e1t4s10.png)
+    ![Confirm gitignore entry](./media/e1t4s10.png)
 
     >**Note:** `.copilot-tracking/` is where every RPI artifact is written. These are working documents for the current task and are deliberately kept out of source control.
 
@@ -226,13 +226,14 @@ In this task, you will open the sample repository, install its dependencies, con
 
 ### Task 5: Your First Interaction with an HVE Agent
 
+
 In this task, you will talk to an HVE agent for the first time. This is a deliberately small interaction so that you can see how the agents behave before the real work begins.
 
 1. Open **GitHub Copilot Chat** with **Ctrl+Alt+I**.
 
 1. Click the **agent picker** and select **Task Researcher**.
 
-    ![Select Task Researcher](./media/hve-e1t5s1.png)
+    ![Select Task Researcher](./media/e1t5s2.png)
 
 1. In the chat input box, type the following question and press **Enter**:
 
@@ -240,7 +241,7 @@ In this task, you will talk to an HVE agent for the first time. This is a delibe
     What output writers does this pipeline currently support, and where are they defined?
     ```
 
-    ![Ask the researcher a question](./media/hve-e1t5s2.png)
+    ![Ask the researcher a question](./media/e1t5s3.png)
 
 1. Read the response. Note three things about how it answered:
 
@@ -248,19 +249,25 @@ In this task, you will talk to an HVE agent for the first time. This is a delibe
     - It **did not change any source code**, even though the question was about code.
     - It **grounded its answer in what it actually found** in your repository, not in what a typical pipeline usually looks like.
 
-    ![Researcher response](./media/hve-e1t5s3.png)
+    ![Researcher response](./media/e1t5s4.png)
 
     >**Note:** This is role specialisation in action. The researcher agent is constrained so that investigation is the only thing it can do, and it records what it finds in files under `.copilot-tracking/research/`. Compare this mentally with what plain Copilot Chat would have produced for the same question.
 
-1. In the Explorer, expand **.copilot-tracking**. If the researcher created a **research** folder for this question, delete that folder now (right-click it, then select **Delete**).
+1. In the Explorer, expand **.copilot-tracking**, then **research**, then the folder named with today's date. You will see a file named **output-writers.md**. Delete the whole **research** folder now (right-click **research**, then select **Delete**), including any **subagents** folder inside it.
 
-    ![Remove the practice research files](./media/hve-e1t5s4.png)
+    ![Remove the practice research files](./media/e1t5s5.png)
 
-    >**Note:** That research was only a warm-up. Removing it means Exercise 02 starts from a clean folder and the Plan phase cannot pick up the wrong document.
+    >**Note:** The warm-up research is always saved as **output-writers.md**. It does not end in `-research.md`, and that is expected for this short question. The file name for your real research in Exercise 02 will be different. Removing this folder means Exercise 02 starts from a clean folder and the Plan phase cannot pick up the wrong document.
+
+    >**Note:** If you cannot see `.copilot-tracking`, press **Ctrl+P** and type `output-writers` to open the file directly, or check that hidden files are shown in the Explorer.
 
 1. Now start a fresh chat by clicking the **+** icon at the top of the Copilot Chat panel, or by typing **/clear** in the chat input and pressing **Enter**.
 
-    ![Clear the chat context](./media/hve-e1t5s5.png)
+    ![Clear the chat context](./media/e1t5s6.png)
+
+    >**Note:** Get into this habit now. You will clear context between every phase in this lab. This is the context engineering principle from Task 1, and it is the single most commonly skipped step when teams adopt RPI.
+
+    ![Clear the chat context](./media/e1t5s7.png)
 
     >**Note:** Get into this habit now. You will clear context between every phase in this lab. This is the context engineering principle from Task 1, and it is the single most commonly skipped step when teams adopt RPI.
 
