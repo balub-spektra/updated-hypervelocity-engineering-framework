@@ -87,20 +87,13 @@ In this task, you will install the HVE Core extension into Visual Studio Code. H
 
     >**Note:** The extension requires Visual Studio Code version 1.106.1 or higher and a working GitHub Copilot installation. Both are pre-configured on your lab virtual machine.
 
-1. After the reload, return to the **Extensions** view, select **HVE Core**, and check the version number shown on the extension page.
+1. After the reload, return to the **Extensions** view, select **HVE Core**, and check the **version number** shown on the extension page.
 
     ![HVE Core installed](./media/e1t2s5.png)
 
     >**Note:** This lab was written and validated against **HVE Core 3.2.2**. HVE Core evolves quickly, and later versions may rename or replace prompts. If your version is different, click the **gear icon** on the extension, select **Install Specific Version...**, and choose **3.2.2**. You can also turn off **Auto Update** from the same menu so the version does not change during the lab.
 
 1. Confirm that **HVE Core** appears under **Installed** with no error badge.
-
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000001" />
 
 ### Task 3: Validate the HVE Core Agents and Prompts in GitHub Copilot Chat
 
@@ -142,13 +135,6 @@ In this task, you will confirm that the HVE Core agents and prompts are register
 
 1. Clear the input box.
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000002" />
-
 ### Task 4: Prepare the Contoso Pipeline Repository
 
 In this task, you will open the sample repository, install its dependencies, confirm the test suite passes, and configure the workspace so RPI artifacts are kept out of version control.
@@ -183,7 +169,7 @@ In this task, you will open the sample repository, install its dependencies, con
 
     >**Note:** This file points every agent at the architecture and conventions documents and states the rules that always apply. HVE Core agents follow the repository conventions in this file, which is why the workflow needs almost no repeated explanation from you.
 
-1. Open the integrated terminal by pressing `Ctrl+Shift+`` or by clicking the **Terminal** icon..
+1. Open the integrated terminal by pressing **Ctrl+Shift+`** or by clicking the **Terminal** icon..
 
     ![Open integrated terminal](./media/e1t4s7.png)
 
@@ -217,13 +203,6 @@ In this task, you will open the sample repository, install its dependencies, con
 
     >**Note:** `.copilot-tracking/` is where every RPI artifact is written. These are working documents for the current task and are deliberately kept out of source control.
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000003" />
-
 ### Task 5: Your First Interaction with an HVE Agent
 
 
@@ -249,9 +228,9 @@ In this task, you will talk to an HVE agent for the first time. This is a delibe
     - It **did not change any source code**, even though the question was about code.
     - It **grounded its answer in what it actually found** in your repository, not in what a typical pipeline usually looks like.
 
-    ![Researcher response](./media/e1t5s4.png)
+        ![Researcher response](./media/e1t5s4.png)
 
-    >**Note:** This is role specialisation in action. The researcher agent is constrained so that investigation is the only thing it can do, and it records what it finds in files under `.copilot-tracking/research/`. Compare this mentally with what plain Copilot Chat would have produced for the same question.
+        >**Note:** This is role specialisation in action. The researcher agent is constrained so that investigation is the only thing it can do, and it records what it finds in files under `.copilot-tracking/research/`. Compare this mentally with what plain Copilot Chat would have produced for the same question.
 
 1. In the Explorer, expand **.copilot-tracking**, then **research**, then the folder named with today's date. You will see a file named **output-writers.md**. Delete the whole **research** folder now (right-click **research**, then select **Delete**), including any **subagents** folder inside it.
 
@@ -287,4 +266,4 @@ In this exercise, you have successfully:
 
 ### You have successfully completed the exercise. Click **Next >>** to continue to the next exercise.
 
-![Next](./media/afg10.png)
+![Next](./media/steps.png)

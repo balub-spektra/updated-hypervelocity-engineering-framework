@@ -200,6 +200,6 @@ Learner Support Contacts:
 
 Click **Next** from the lower right corner to move on to the next page.
 
-![Next](./media/afg10.png)
+![Next](./media/steps.png)
 
 ## Happy Learning!!

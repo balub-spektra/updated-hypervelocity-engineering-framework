@@ -69,13 +69,6 @@ In this task, you will invoke the Task Researcher agent using the `/task-researc
 
     ![Research complete](./media/e2t1s7.png)
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000004" />
-
 ### Task 2: Inspect the Research Document
 
 In this task, you will locate and open the research document the agent produced. The document, not the chat transcript, is the real output of this phase.
@@ -105,23 +98,16 @@ In this task, you will locate and open the research document the agent produced.
     - **Potential next research**, meaning open questions the agent chose not to chase.
     - A **recommended approach** at the end.
 
-    ![Research document contents](./media/e2t2s3.png)
+        ![Research document contents](./media/e2t2s3.png)
 
 1. Scroll to any finding that references your codebase and verify the cited file. If `Ctrl + Click` does not navigate directly to the code, use Quick Open:
    - Press `Ctrl + P` to open the search bar.
    - Type the name of the file mentioned in the research document (for example, `base.py` or `local_writer.py`).
    - Press `Enter` to open it directly.
 
-   ![Follow a citation](./media/e2t2s4.png)
+        ![Follow a citation](./media/e2t2s4.png)
 
-   >**Note:** Verify that the citation is accurate. This is the point of the Research phase. A finding you can trace back to a real line of code is knowledge. A finding you cannot trace is a guess, and if you find one, correct it now before it propagates into the plan.
-
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000005" />
+        >**Note:** Verify that the citation is accurate. This is the point of the Research phase. A finding you can trace back to a real line of code is knowledge. A finding you cannot trace is a guess, and if you find one, correct it now before it propagates into the plan.
 
 ### Task 3: Read the Evidence and the Recommended Approach
 
@@ -167,8 +153,6 @@ In this task, you will add one more finding to the research. Adding it now takes
 
 1. Stay in the **same chat**. Do not clear it yet.
 
-    >**Note:** You clear the chat between phases, not within one. Refining research is still the Research phase.
-
 1. Paste this and press **Enter**:
 
     ```
@@ -198,12 +182,6 @@ In this task, you will add one more finding to the research. Adding it now takes
 
     >**Note:** The research is saved in the file, so nothing is lost. The Plan phase reads the file, not this conversation. This is what artifact-driven handoff means.
 
-
-
-
-
-<question source="Questions/question-04.md" />
-
 ## 🧾 Summary
 
 In this exercise, you have successfully:
@@ -218,4 +196,4 @@ In this exercise, you have successfully:
 
 ### You have successfully completed the exercise. Click **Next >>** to continue to the next exercise.
 
-![Next](./media/afg10.png)
+![Next](./media/steps.png)

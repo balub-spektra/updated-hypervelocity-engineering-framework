@@ -71,6 +71,8 @@ In this task, you will run the Implement phase with a pause after every phase, s
 
     ![Allow, answer and keep](./media/e4t1s6.png)
 
+    > **Note:** The agent may request permission multiple times throughout the phase. Continue clicking **Allow** for each command prompt and **Keep** for file changes until it finishes.
+
     >**Note:** The commands are the ones the implementor needs, such as reading files and running `pytest`. **Keep** accepts the files the implementor wrote. **Undo** would throw them away, so do not click it.
 1. Confirm that the implementor stops after Phase 1 and presents a summary of completed changes before proceeding.    
 
@@ -86,13 +88,6 @@ In this task, you will run the Implement phase with a pause after every phase, s
     ![Plan checkboxes ticked](./media/e4t1s9.png)
 
     >**Note:** The implementor ticks a step only after it has done it, and it records the work in the change log. A tick is your evidence that the step was done.
-
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000008" />
 
 ### Task 2: Execute the Remaining Plan Phases
 
@@ -110,7 +105,7 @@ In this task, you will let the implementor finish the rest of the plan.
 
     ![Implementor progressing through phases](./media/e4t2s2.png)
 
-    >**Note:** This step takes the longest in the lab, typically eight to twelve minutes. Use the time to keep the plan file open beside the chat, and watch the steps get ticked one by one.
+    >**Note:** This step takes the longest in the lab, typically 10 to 15 minutes. Use the time to keep the plan file open beside the chat, and watch the steps get ticked one by one.
 
 
 
@@ -124,13 +119,6 @@ In this task, you will let the implementor finish the rest of the plan.
     ![Implementor progressing through phases](./media/e4t2s4.png)
 
     >**Note:** If you still find `[ ]`, send this in the same chat, then search again: `Continue with the steps that are not yet ticked in the plan.`
-
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000009" />
 
 ### Task 3: Inspect the Change Log and Run the Tests
 
@@ -150,11 +138,13 @@ In this task, you will read what the implementor recorded and confirm the code a
     - `### Modified`
     - `## Release Summary`
 
-    ![Change log contents](./media/e4t3s2.1.png)
-    ![Change log contents](./media/e4t3s2.2.png)
-    ![Change log contents](./media/e4t3s2.3.png)
+        ![Change log contents](./media/e4t3s2.1.png)
 
-    >**Note:** The change log lists every file added and modified, with a short statement of what changed in each. It is the artifact that makes a pull request reviewable, and it is one of the inputs the Review phase uses. The implementor also offers a commit message when it finishes. Do not commit anything yet.
+        ![Change log contents](./media/e4t3s2.2.png)
+
+        ![Change log contents](./media/e4t3s2.3.png)
+
+        >**Note:** The change log lists every file added and modified, with a short statement of what changed in each. It is the artifact that makes a pull request reviewable, and it is one of the inputs the Review phase uses. The implementor also offers a commit message when it finishes. Do not commit anything yet.
 
 1. Open the integrated terminal at the repository root (**Ctrl+`**) and run:
 
@@ -181,13 +171,6 @@ In this task, you will read what the implementor recorded and confirm the code a
     You should see at least one test name. This is the requirement **you** added by hand in Exercise 03, and finding it here shows a human edit to the plan reaching the delivered code.
 
     >**Note:** If no line appears, send this in the implementor chat, then run `pytest -q` again: `The plan's success criteria require tests for the partial-write failure path. Add them, update the change log, then run pytest -q.` Do not write the test yourself. This is a defect being routed back to implementation.
-
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000010" />
 
 ### Task 4: Run the Review Phase
 
@@ -231,7 +214,9 @@ In this task, you will run the Review phase.
 
     ![Review log contents](./media/e4t4s6.2.png)
 
-   
+    ![Review log contents](./media/e4t4s6.3.png)
+
+    ![Review log contents](./media/e4t4s6.4.png)
 
     >**Note:** The review log records the severity counts, the result for each plan phase, the test command results, and the follow-up work. The overall status is one of **Complete**, **Needs Rework** or **Blocked**.
 
@@ -243,8 +228,7 @@ In this task, you will run the Review phase.
     |---|---|
     | **Complete** | Continue to Task 5. |
     | **Needs Rework** | Do the rework steps below, then come back to this table. |
-    | **Blocked** | Read what blocks the review, resolve it, then run `/task-review` again. |
-
+   
     >**Note:** **Needs Rework** means the review found at least one **critical** or **major** finding. Minor findings alone do not cause it. It is a normal result. The workflow is designed to send the work back and check it again.
 
 1. **Only if the status is Needs Rework:** find the findings that caused it. Press **Ctrl+F** in the review log and search for `critical`, then `major`. Read each one and decide which kind it is:
@@ -252,67 +236,88 @@ In this task, you will run the Review phase.
     | Kind of finding | How to recognise it | What to do |
     |---|---|---|
     | **Code finding** | It names a file, a function or a failing test. | Use the **code fix** prompt in the next step. |
-    | **Decision finding** | It names no file. It says a choice is missing, such as identity, provisioning, limits, concurrency or retention. | Use the **decision fix** prompt in the next step. |
+    | **Decision finding** | It names no file. It says a choice is missing, such as identity, provisioning, limits, concurrency or retention, or that the plan artifacts contradict each other. | Use the **decision fix** prompt in the next step. |
+    | **External evidence finding** | It asks for proof that lives outside this repository, such as deployment, infrastructure, RBAC, scheduler or storage-policy evidence. | Use the **scope fix** prompt in the next step. |
 
-    ![Find the blocking findings](./media/e4t4s6.png)
+    ![Find the blocking findings](./media/e4t4s8.1.png)
+
+    ![Find the blocking findings](./media/e4t4s8.2.png)
 
     >**Note:** A decision finding can't be fixed by changing code. If you send it to the implementor as a code fix, the next review returns **Needs Rework** again. Fix it by writing the decision down in the plan and the docs.
 
-1. **Only if the status is Needs Rework:** start a fresh chat, select **Task Implementor** in the agent picker, and send the prompt that matches your findings. Paste your review log path.
+    >**Note:** An external evidence finding can't be fixed in this lab at all, because the lab repository has no deployment or infrastructure. If you treat it as a decision finding, the implementor writes more decisions, and the next review asks for proof of those, which is a loop. Fix it by marking the platform work as out of scope for this plan.
 
-    For **code findings**:
+1. **Only if the status is Needs Rework:** send the fix prompts, one fresh chat per prompt, in this order: code fix, decision fix, scope fix. Skip any kind your review does not have.
 
+    >**Note:** If your review has **code findings**, start a **fresh chat**, select **Task Implementor**, and paste:
     ```
     /task-implement Fix every critical and major finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. Update the change log, then run pytest -q.
     ```
 
-    For **decision findings**:
+    For **decision findings**, start a **fresh chat**, select **Task Implementor** in the agent picker, and paste the **decision fix** prompt, using your review log path:
 
     ```
-    /task-implement Resolve every critical and major decision finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. For each open decision, record an explicit choice and its reason in the plan, the README and the conventions docs. Do not change code unless a decision requires it. Update the change log, then run pytest -q.
+    /task-implement Resolve every critical and major decision finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. For each open decision, record an explicit choice and its reason in the plan, the details file, the README and the conventions docs. Replace any earlier conflicting decision in every .copilot-tracking artifact, including the change log, instead of adding a new one beside it. Do not change code unless a decision requires it. Update the change log, then run pytest -q.
     ```
 
-    If the review has both kinds, send the code fix prompt first, then the decision fix prompt.
+    ![Send the decision fix prompt](./media/e4t4s9.1.png)
 
-    ![Send the findings back to the implementor](./media/e4t4s7.png)
+    For **external evidence findings**, wait for the previous prompt to finish, start another **fresh chat**, select **Task Implementor**, and paste the **scope fix** prompt:
+
+    ```
+    /task-implement Resolve every critical and major external evidence finding in .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md. This repository has no deployment or infrastructure. In the plan and the details file, move platform implementation and deployment verification out of Dependencies and Success Criteria into an Out of Scope section, owned by the platform team and tracked as follow-up work, and state that it is not a completion criterion for this plan. Do not change code. Update the change log.
+    ```
+
+    ![Send the scope fix prompt](./media/e4t4s9.2.png)
 
     >**Note:** Naming the review log in the message makes sure the implementor reads it. Answer any **Run pwsh command?** box with **Allow**, and click **Keep** on the changed-files bar, as in Task 1.
 
-1. When the implementor finishes, run `pytest -q` in the terminal and confirm every test passes. For decision findings, also open the plan and the README and confirm the decisions are written there.
+1. **Check the results.**
 
-1. **Move the old review files out of the way.** In the Explorer, create a folder called `review-archive` inside `.copilot-tracking`. Drag these two items into it:
+    - In the terminal, run `pytest -q` and confirm every test passes.
 
-    - `.copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md`
-    - the folder `.copilot-tracking/reviews/rpi`
+       ![Run terminal](./media/e4t4s10.1.png)
 
-    ![Archive the old review files](./media/e4t4s8.png)
+    - Open the plan and confirm it now has an **Out of Scope** section.
 
-    >**Note:** This step is the one that makes the second review different from the first. When the reviewer starts, it looks for an existing review log and completed validation files, and it resumes from them and keeps the results it already has. If you leave the old files in place, it repeats its earlier verdict without checking the new code. Moving them forces a fresh review, and you still keep the old log as evidence.
+      ![Run terminal](./media/e4t4s10.2.png)
 
-1. **Review again.** Start a fresh chat, select **Task Reviewer**, and run the same command as before:
+    - Open the details file and confirm there is no `AZURE_CLIENT_ID` or `64 MiB` requirement left.
+
+      ![Run terminal](./media/e4t4s10.3.png)
+
+1. **Move the old review files out of the way.** The `.copilot-tracking/review-archive` folder does not exist yet, so create it first. In the Explorer, right-click `.copilot-tracking`, select **New Folder**, and name it `review-archive`. Then drag **everything** inside `.copilot-tracking/reviews` directly into `review-archive` (do not create any extra subfolder), so that the `reviews` folder is left completely empty:
+
+    - the dated folder, such as `YYYY-MM-DD`, holding `<task>-plan-review.md`
+    - the folder `quality`
+    - the folder `rpi`
+
+        ![Archive the old review files](./media/e4t4s11.png)
+
+        Expand `.copilot-tracking/reviews` and confirm it is now empty. No files or folders should be left inside it.
+
+        >**Note:** This step is the one that makes the second review different from the first. When the reviewer starts, it looks for an existing review log and completed validation files, and it resumes from them and keeps the results it already has. If you leave the old files in place, it repeats its earlier verdict without checking the new code. Moving them forces a fresh review, and you still keep the old log as evidence.
+
+1. **Review again.** Start a **fresh chat**, select **Task Reviewer**, and run:
 
     ```
     /task-review plan=.copilot-tracking/plans/YYYY-MM-DD/<task>-plan.instructions.md
     ```
 
-    Open the new review log and check the overall status again.
+    Wait for it to finish and check the final summary. The **Overall Status** should be **Complete**, with only minor findings.
 
-    >**Note:** The number of critical and major findings should be lower, and the status should now be **Complete**. If the same finding appears again, the implementor did not fix it. For a code finding, open the finding and check that the named file changed. For a decision finding, check that the decision is written in the plan and the docs. Then repeat the steps above once more, this time adding the finding text to your message. Minor findings alone do not block you.
+    ![Final review status](./media/e4t4s2.png)
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000011" />
+    >**Note:** Minor findings alone do not block you. If the same critical or major finding appears again, the implementor did not fix it: repeat the matching fix prompt once more, adding the finding text to your message, then archive and review again. If the only remaining majors ask for evidence outside the repository, record them as follow-up work and continue to Task 5.
 
 ### Task 5: Route Follow-up Work
 
 In this task, you will read the follow-up work the workflow found and decide which phase each item belongs to.
 
-1. In the review log, press **Ctrl+F** and search for `follow-up`. Read the items listed. They are split into work **deferred from scope** and work **discovered during review**.
+1. In the review log, press **Ctrl+F** and search for `follow-up`. Read the items listed. They are usually split into work **deferred from scope** and work **discovered during review**. The reviewer may use different headings, such as **Recommended cleanup**; what matters is the items, not the heading names.
 
-    ![Follow-up items in the review log](./media/hve-e4t5s2.png)
+
+    ![Follow-up items in the review log](./media/e4t5s1.png)
 
 1. Open the planning log:
 
@@ -322,7 +327,7 @@ In this task, you will read the follow-up work the workflow found and decide whi
 
     Press **Ctrl+F** and search for `Follow-On`. Read the suggested follow-on work.
 
-    ![Suggested follow-on work](./media/hve-e4t5s3.png)
+    ![Suggested follow-on work](./media/e4t5s2.png)
 
     >**Note:** Typical items are retry behaviour, credential handling, large-file streaming and concurrent writes to the same blob. Not every item is worth acting on. Its value is that the next steps are written down while the context is fresh.
 
@@ -335,11 +340,10 @@ In this task, you will read the follow-up work the workflow found and decide whi
     | Missing technical knowledge | Research | `/task-research` |
     | Valid work outside this change | A separate backlog item | A new RPI cycle |
 
-    ![Route the follow-up](./media/hve-e4t5s4.png)
 
     >**Note:** The Task Reviewer's own handoff uses the same routes: clear the chat with `/clear`, open the review log, then start `/task-implement`, `/task-research` or `/task-plan`. Routing each finding to the right phase keeps it from being lost in a comment thread.
 
-1. Open each of the six files you produced across this lab, one at a time:
+1. To verify, Open each of the six files you produced across this lab, one at a time:
 
     ```
     .copilot-tracking/research/YYYY-MM-DD/<topic>-research.md
@@ -349,9 +353,7 @@ In this task, you will read the follow-up work the workflow found and decide whi
     .copilot-tracking/changes/YYYY-MM-DD/<task>-changes.md
     .copilot-tracking/reviews/YYYY-MM-DD/<task>-plan-review.md
     ```
-
-    ![The RPI artifacts](./media/hve-e4t5s5.png)
-
+    
     >**Note:** Read as a set, these files tell the complete story of a change: what was known, what was decided, what was done, and what was verified. That trail is what makes AI-assisted work auditable, and it is the strongest argument for adopting HVE on a team rather than leaving prompting to individual habit.
 
 <question source="Questions/question-06.md" />
@@ -380,4 +382,4 @@ To take this further with your own team, review the HVE Core documentation at **
 
 ### You have successfully completed the lab.
 
-![Complete](./media/afg10.png)
+![Complete](./media/steps.png)

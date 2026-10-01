@@ -61,13 +61,6 @@ In this task, you will invoke the Task Planner agent using the `/task-plan` prom
 
     ![Plan complete](./media/e3t1s7.png)
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000006" />
-
 ### Task 2: Inspect the Plan and Details Files
 
 In this task, you will open the plan and the details file. The plan says *what* to do. The details file says *precisely where and how*.
@@ -90,11 +83,11 @@ In this task, you will open the plan and the details file. The plan says *what* 
     - `Details:`
     - `## Success Criteria`
 
-    ![Plan structure](./media/e3t2s2.png)
+        ![Plan structure](./media/e3t2s2.png)
 
-    >**Note:** The number of phases and steps varies from run to run. A typical plan has three phases plus a final validation phase. Phase 1 creates the Blob Storage client wrapper, Phase 2 creates the writer, Phase 3 wires it into the configuration and adds tests, and the last phase runs the full test suite. Dependencies come first, integration last.
+         >**Note:** The number of phases and steps varies from run to run. A typical plan has three phases plus a final validation phase. Phase 1 creates the Blob Storage client wrapper, Phase 2 creates the writer, Phase 3 wires it into the configuration and adds tests, and the last phase runs the full test suite. Dependencies come first, integration last.
 
-1. Search for `[ ]`. You should get matches, and a search for `[x]` should get **none**.
+1. Search for `[ ]`. You should get matches.
 
     ![Every step is unticked](./media/e3t2s3.png)
 
@@ -120,13 +113,6 @@ In this task, you will open the plan and the details file. The plan says *what* 
 
     >**Note:** Planning wrote only to `.copilot-tracking/`, which is git-ignored, so nothing appears at all.
 
-   > **Congratulations** on completing the task! Now, it's time to validate it. Here are the steps:
-   - Hit the validate button for the corresponding task. If you receive a success message, you can proceed to the next task.
-   - If not, carefully read the error message and retry the step, following the instructions in the exercise guide.
-   - If you need any assistance, don't hesitate to get in touch with us at cloudlabs-support@spektrasystems.com. We are available 24/7 to assist you.
-
-   <validation step="00000000-0000-0000-0000-000000000007" />
-
 ### Task 3: Read the Planning Log
 
 In this task, you will read the third file, in which the planner records how it made its decisions.
@@ -149,17 +135,15 @@ In this task, you will read the third file, in which the planner records how it 
     - `Implementation Paths`
     - `Follow-On`
 
-    ![Planning log contents](./media/e3t3s3.1.png)
+        ![Planning log contents](./media/e3t3s3.1.png)
 
-    ![Planning log contents](./media/e3t3s3.2.png)
+        ![Planning log contents](./media/e3t3s3.2.png)
 
-    ![Planning log contents](./media/e3t3s3.3.png)
+        ![Planning log contents](./media/e3t3s3.3.png)
 
+        >**Note:** The **Discrepancy Log** lists places where the plan and the research do not fully match. **Implementation Paths Considered** lists the options the planner weighed and why it chose one. **Suggested Follow-On Work** lists ideas left out on purpose. The planner already checked its plan against the research and fixed anything serious, so what remains is the honest list of caveats. A short log with few items is fine.
 
-
-    >**Note:** The **Discrepancy Log** lists places where the plan and the research do not fully match. **Implementation Paths Considered** lists the options the planner weighed and why it chose one. **Suggested Follow-On Work** lists ideas left out on purpose. The planner already checked its plan against the research and fixed anything serious, so what remains is the honest list of caveats. A short log with few items is fine.
-
-    >**Note:** This is a cheap check at the cheapest possible moment. Catching a missing requirement here costs one edit to a markdown file. Catching the same thing after implementation costs a rework cycle across several source files.
+        >**Note:** This is a cheap check at the cheapest possible moment. Catching a missing requirement here costs one edit to a markdown file. Catching the same thing after implementation costs a rework cycle across several source files.
 
 ### Task 4: Apply Your Own Human Review and Approve the Plan
 
@@ -211,4 +195,4 @@ In this exercise, you have successfully:
 
 ### You have successfully completed the exercise. Click **Next >>** to continue to the next exercise.
 
-![Next](./media/afg10.png)
+![Next](./media/steps.png)
